@@ -25,6 +25,8 @@ namespace Mouse
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_aller_magasin;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_aller_magasin_to_plateau;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_placer_piece;
+        public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_retour_magasin;
+
 
         struct Emplacement
         {
@@ -45,6 +47,7 @@ namespace Mouse
             liste_aller_magasin = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             liste_aller_magasin_to_plateau = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             liste_placer_piece = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
+            liste_retour_magasin = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             plateau = new List<Emplacement>();
 
             pts = new NLX.Robot.Kuka.Controller.CartesianPosition();
@@ -256,6 +259,7 @@ namespace Mouse
 
             if (position_libre >= 0)
             {
+                // On donne la position de l'emplacement libre
                 pts.X = plateau.ElementAt(position_libre).point.X;
                 pts.Y = plateau.ElementAt(position_libre).point.Y;
                 pts.Z = plateau.ElementAt(position_libre).point.Z;
@@ -264,6 +268,34 @@ namespace Mouse
                 pts.C = plateau.ElementAt(position_libre).point.C;
 
                 liste_placer_piece.Add(pts);
+
+                // On descend pour poser la pièce
+                pts.Z = plateau.ElementAt(position_libre).point.Z-200;
+                liste_placer_piece.Add(pts);
+
+                // On joue la trajectoire
+                robot.PlayTrajectory(liste_placer_piece);
+                // On ouvre la pince pour lacher le cylindre
+                robot.OpenGripper();
+
+                // On remonte la pince pour se dégager
+                robot.StartRelativeMovement();
+                pts.X = 0;
+                pts.Y = 0;
+                pts.Z += 200;
+                pts.A = 0;
+                pts.B = 0;
+                pts.C = 0;
+                robot.SetRelativeMovement(pts);
+                robot.StopRelativeMovement();
+
+                // On retourne au magasin
+                robot.PlayTrajectory(liste_aller_magasin);
+
+
+
+
+
             }
         }
     }
