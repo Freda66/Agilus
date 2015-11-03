@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//TODO :  - ROBOT NE VAS PAS A LA BONNE POSITION QUAND ON LANCE LE PLAYTRAJECTORY POUR ALLER DEVANT LE MAGASIN
+//        - FORMULES DE CALCUL NE PRENNENT PAS EN COMPTE LA TRANSFORMATION DE REPERE.
+//        - RELATIVEMOVEMENT NE FONCTIONNE PAS
 
 //angles en degrès
 //unité : milimètre
@@ -16,6 +19,14 @@ namespace Mouse
 {
     public partial class Form1 : Form
     {
+        //CONSTANTES POUR POSITIONS PLATEAU
+        public const int NBLIGNESPLATEAU = 4;
+        public const int NBCOLONNESPLATEAU = 4;
+        public const double XORIGINE = 939.88;
+        public const double YORIGINE = -289.09;
+        public const double XLAST = 677.17;
+        public const double YLAST = -283.23;
+
         static TDx.TDxInput.Device device;
         static TDx.TDxInput.Vector3D vecteur;
         public NLX.Robot.Kuka.Controller.RobotController robot;
@@ -28,7 +39,7 @@ namespace Mouse
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_retour_magasin;
 
 
-        struct Emplacement
+        public struct Emplacement
         {
             public bool isBusy;
             public NLX.Robot.Kuka.Controller.CartesianPosition point;
@@ -80,7 +91,7 @@ namespace Mouse
             pts.A = 46.18;
             pts.B = 89.34;
             pts.C = -50.14;
-            
+
             liste_aller_magasin_to_plateau.Add(pts);
 
             // Retrait
@@ -102,8 +113,34 @@ namespace Mouse
             pts.C = 92.69;
             liste_aller_magasin_to_plateau.Add(pts);
 
+            for (int i = 0;  i < NBLIGNESPLATEAU; i++)
+            {
+                for(int j = 0; j < NBCOLONNESPLATEAU; j++)
+                {
+                    double posx = ((XLAST - XORIGINE) / NBCOLONNESPLATEAU - 1) * j + XORIGINE;
+                    double posy = ((YLAST - YORIGINE) / NBLIGNESPLATEAU - 1) * i + YORIGINE;
+                    pts.X = posx;
+                    pts.Y = posy;
+                    pts.Z = 347.88;
+                    pts.A = 31.97;
+                    pts.B = 1.26;
+                    pts.C = 92.69;
+                    bool busy = false;
 
-            
+                    Emplacement temp;
+                    temp.point = pts;
+                    temp.isBusy = busy;
+
+                    plateau.Add(temp);
+
+                    Console.WriteLine("Emplacement(" + i + "," + j + ") => X: " + posx + "  Y: " + posy);
+                    
+                }
+               
+
+            }
+
+
 
         }
 
@@ -111,7 +148,7 @@ namespace Mouse
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
 
@@ -124,25 +161,31 @@ namespace Mouse
                 Console.WriteLine("start program");
                 device = new TDx.TDxInput.Device();
                 device.Connect();
+            try{
+                    robot.GetCurrentPosition();
+                    Console.WriteLine("Connection success ! ");
+            }
+                catch(Exception exc)
+                {
+                    Console.WriteLine("Connection failed ! => " + exc.Message);
+                }
 
                 Console.WriteLine("Mouse connected");
-               /* while (true)
-                {
-                    var translation = device.Sensor.Translation;
-                    var rotation = device.Sensor.Rotation;
-
-
-                    //Console.WriteLine("Translation: X:" + (translation.X / norme).ToString() + "  Y:" + (translation.Y / norme).ToString());
-                    //Console.WriteLine("Rotation: X:" + (rotation.X / norme).ToString() + "  Y:" + (rotation.Y / norme).ToString());
-
-                    // si besoin mettre timer
-                    System.Threading.Thread.Sleep(50);
-                }*/
+                /* while (true)
+                 {
+                     var translation = device.Sensor.Translation;
+                     var rotation = device.Sensor.Rotation;
+                     //Console.WriteLine("Translation: X:" + (translation.X / norme).ToString() + "  Y:" + (translation.Y / norme).ToString());
+                     //Console.WriteLine("Rotation: X:" + (rotation.X / norme).ToString() + "  Y:" + (rotation.Y / norme).ToString());
+                     // si besoin mettre timer
+                     System.Threading.Thread.Sleep(50);
+                 }*/
             });
 
             Console.WriteLine("press key to quit");
-           // Console.ReadKey();
+            // Console.ReadKey();
         }
+
 
         private void buttonGetPosition_Click(object sender, EventArgs e)
         {
@@ -151,16 +194,9 @@ namespace Mouse
             labelZ.Text = robot.GetCurrentPosition().Z.ToString();
         }
 
-       
-
-        private void buttonReadSensor_Click(object sender, EventArgs e)
-        {
-            labelReadSensor.Text = robot.ReadSensor().ToString();
-        }
-
         private void buttonSavePosition_Click(object sender, EventArgs e)
         {
-            NLX.Robot.Kuka.Controller.CartesianPosition point= new NLX.Robot.Kuka.Controller.CartesianPosition();
+            NLX.Robot.Kuka.Controller.CartesianPosition point = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             point.X = robot.GetCurrentPosition().X;
             point.Y = robot.GetCurrentPosition().Y;
@@ -170,9 +206,16 @@ namespace Mouse
             point.C = robot.GetCurrentPosition().C;
 
             liste_points.Add(point);
-            listBoxSavePosition.Items.Add("X"+robot.GetCurrentPosition().X.ToString() + " Y:" + robot.GetCurrentPosition().Y.ToString() + " Z:" + robot.GetCurrentPosition().Z.ToString());
+            listBoxSavePosition.Items.Add("X" + robot.GetCurrentPosition().X.ToString() + " Y:" + robot.GetCurrentPosition().Y.ToString() + " Z:" + robot.GetCurrentPosition().Z.ToString());
         }
 
+
+        private void buttonReadSensor_Click(object sender, EventArgs e)
+        {
+            labelReadSensor.Text = robot.ReadSensor().ToString();
+        }
+
+       
         private void buttonOpenGripper_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Open Gripper");
@@ -184,8 +227,9 @@ namespace Mouse
             Console.WriteLine("Close Gripper");
             robot.CloseGripper();
 
-           
+
         }
+
 
         private void buttonHaut_Click(object sender, EventArgs e)
         {
@@ -223,11 +267,14 @@ namespace Mouse
             robot.StopRelativeMovement();
         }
 
+
+
         private void buttonTrajectory_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Lancement trajectoire");
             robot.PlayTrajectory(liste_points);
         }
+
 
         private void buttonAllerAuMagasin_Click(object sender, EventArgs e)
         {
@@ -235,7 +282,7 @@ namespace Mouse
 
             robot.PlayTrajectory(liste_aller_magasin);
             robot.CloseGripper();
-            
+
         }
 
         private void buttonAllerPlateau_Click(object sender, EventArgs e)
@@ -247,11 +294,11 @@ namespace Mouse
         private void buttonPlacerPiece_Click(object sender, EventArgs e)
         {
             var position_libre = -1;
-            for (int i=0; i<plateau.Count;i++)
+            for (int i = 0; i < plateau.Count; i++)
             {
                 if (!plateau.ElementAt(i).isBusy)
                 {
-                    position_libre=i;
+                    position_libre = i;
                     break;
                 }
             }
@@ -270,7 +317,7 @@ namespace Mouse
                 liste_placer_piece.Add(pts);
 
                 // On descend pour poser la pièce
-                pts.Z = plateau.ElementAt(position_libre).point.Z-200;
+                pts.Z = plateau.ElementAt(position_libre).point.Z - 200;
                 liste_placer_piece.Add(pts);
 
                 // On joue la trajectoire
