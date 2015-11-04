@@ -40,20 +40,18 @@ namespace Mouse6d
             bool endMouse = true;
             while (endMouse)
             {
-                Console.WriteLine("main thread: endMouse = True");
                 // Met le thread principale (ici) en attente d'une millisecond pour autoriser le thread secondaire à faire quelque chose
                 Thread.Sleep(1);
                 // Convertion des donnees de la souris pour le robot 
                 CartesianPosition CartPositionMouse = new CartesianPosition();
-                CartPositionMouse.A = 0.0; CartPositionMouse.B = 0.0; CartPositionMouse.C = 0.0;
-                CartPositionMouse.X = MyMouse.MoveByVector.X;
-                CartPositionMouse.Y = MyMouse.MoveByVector.Y;
-                CartPositionMouse.Z = MyMouse.MoveByVector.Z;
+                CartPositionMouse.X = - MyMouse.MoveByVector.Z;
+                CartPositionMouse.Y = - MyMouse.MoveByVector.X;
+                CartPositionMouse.Z = MyMouse.MoveByVector.Y;
                 CartPositionMouse.A = MyMouse.RotateByVector.X;
                 CartPositionMouse.B = MyMouse.RotateByVector.Y;
                 CartPositionMouse.C = MyMouse.RotateByVector.Z;
-                Console.WriteLine("main thread: X : {0} | Y : {1} | Z : {2}", CartPositionMouse.X, CartPositionMouse.Y, CartPositionMouse.Z);
-                // Envoi les commande de deplacement au robot
+                //Console.WriteLine("cmd robot: X : {0} | Y : {1} | Z : {2} | A : {3} | B : {4} | C : {5}", CartPositionMouse.X, CartPositionMouse.Y, CartPositionMouse.Z, CartPositionMouse.A, CartPositionMouse.B, CartPositionMouse.C);
+                // Envoi les commandes de deplacement au robot
                 MyRobot.SetRelativeMovement(CartPositionMouse);
             }
 
