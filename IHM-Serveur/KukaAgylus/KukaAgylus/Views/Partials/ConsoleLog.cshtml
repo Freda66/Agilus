@@ -8,7 +8,8 @@
 
 <script>
     var timer_log;
-    function updateLogs() {
+    function UpdateLogs() {
+        clearTimeout(timer_log);
         $.ajax({
             url: "/Home/GetLogs",
             type: "get",
@@ -17,12 +18,12 @@
                 response.forEach(function (log) {
                     $('.console').append(log + '<br/>');
                 });
-                timer_log = setTimeout("updateLogs()", 2000);
+                timer_log = setTimeout("UpdateLogs()", 2000);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 clearTimeout(timer_log);
             }
         });
     }
-    updateLogs();
+    UpdateLogs();
 </script>
