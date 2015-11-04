@@ -44,5 +44,17 @@ namespace KukaAgylus.Controllers
             return Json(logsToString, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public ActionResult GetMouseInfos()
+        {
+            return Json(MvcApplication.MouseInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetRobotInfos()
+        {
+            return Json(MvcApplication.RobotInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
