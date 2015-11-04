@@ -10,6 +10,8 @@ namespace KukaAgylus
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static List<Models.Log> Logs = new List<Models.Log>();
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -20,7 +22,7 @@ namespace KukaAgylus
 
         protected void Session_Start(object sender, EventArgs e)
         {
-            Session["LOGS"] = new List<Models.Log>();
+            Logs.Add(new Models.Log("info", "New user connected"));
         }
     }
 }

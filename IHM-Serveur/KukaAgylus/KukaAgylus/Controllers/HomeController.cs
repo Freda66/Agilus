@@ -29,10 +29,20 @@ namespace KukaAgylus.Controllers
 
         public ActionResult BtnConnect_Click(object sender, EventArgs e)
         {
-            ((List<Models.Log>)Session["LOGS"]).Add(new Models.Log("infos", "Connecting to the device ..."));
+            MvcApplication.Logs.Add(new Models.Log("info", "Connecting to the device ..."));
             // ADD CONNECTION HERE
 
             return View("Index");
         }
+        
+        [HttpGet]
+        public ActionResult GetLogs()
+        {
+            var logsToString = new List<string>();
+            foreach (var log in MvcApplication.Logs.OrderByDescending(m => m.Time))
+                logsToString.Add(log.ToString());
+            return Json(logsToString, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
