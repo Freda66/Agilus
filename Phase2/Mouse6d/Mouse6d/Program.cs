@@ -49,6 +49,9 @@ namespace Mouse6d
                 CartPositionMouse.X = MyMouse.MoveByVector.X;
                 CartPositionMouse.Y = MyMouse.MoveByVector.Y;
                 CartPositionMouse.Z = MyMouse.MoveByVector.Z;
+                CartPositionMouse.A = MyMouse.RotateByVector.X;
+                CartPositionMouse.B = MyMouse.RotateByVector.Y;
+                CartPositionMouse.C = MyMouse.RotateByVector.Z;
                 Console.WriteLine("main thread: X : {0} | Y : {1} | Z : {2}", CartPositionMouse.X, CartPositionMouse.Y, CartPositionMouse.Z);
                 // Envoi les commande de deplacement au robot
                 MyRobot.SetRelativeMovement(CartPositionMouse);
