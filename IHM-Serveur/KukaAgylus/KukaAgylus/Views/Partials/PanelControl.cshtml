@@ -1,0 +1,54 @@
+﻿<div class="col-lg-12">
+    <h2>Mouse Calibration</h2>
+    <p>Descriptions des commandes</p>
+    <input type="hidden" id="hf-calibration-state" value="stop" />
+    <p><input type="button" id="btn-mouse-calib" class="btn btn-default" title="Calibration" value="Start calibration" onclick="BtnCalibrateClick()" /></p>
+</div>
+
+
+
+<div class="col-lg-12">
+    <h2>Robot Initalisation</h2>
+    <p>Descriptions des commandes</p>
+    <p>
+        <div class="input-group">
+            <span class="input-group-addon" id="ipadress-addon">@@Ip</span>
+            <input type="text" class="form-control" placeholder="ex: 192.168.1.1" aria-describedby="ipadress-addon">
+        </div>
+    </p>
+    <p><input type="button" class="btn btn-default" id="btn-connect-rob" title="Connect" value="Connect &raquo;" onclick="location.href='@Url.Action("BtnConnect_Click", "Home")'" /></p>
+
+
+</div>
+<div class="col-lg-12">
+    <h2>Robot Settings</h2>
+    <p>Descriptions des commandes</p>
+    <p><input type="button" class="btn btn-default" title="Connect" value="Connect &raquo;" onclick="location.href='@Url.Action("BtnConnect_Click", "Home")'" /></p>
+</div>
+
+
+
+<script>
+    function BtnCalibrateClick() {
+        $.ajax({
+            url: "/Home/SwitchMouseCalibration",
+            type: "get",
+            data: { start: ($('#hf-calibration-state').val() == "stop") },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    if ($('#hf-calibration-state').val() == "stop") {
+                        $('#hf-calibration-state').val("start");
+                        $('#btn-mouse-calib').val("Stop calibration");
+                    } else {
+                        $('#hf-calibration-state').val("stop");
+                        $('#btn-mouse-calib').val("Start calibration");
+                    }
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+</script>

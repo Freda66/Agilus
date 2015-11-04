@@ -64,3 +64,21 @@ textarea {
 label{
     font-weight: normal;
 }
+
+.control-panel-left {
+    border-right: 1px solid rgba(0,0,0,0.6);
+}
+
+.margin-top-20 {
+    margin-top:20px;
+}
+
+.input-group-addon{
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-repeat: inherit;
+}
+.input-group .form-control{
+    border: 1px solid rgb(19, 21, 22);
+    background-color: rgb(237, 237, 237);
+    outline-color: rgb(255, 255, 255);
+}
