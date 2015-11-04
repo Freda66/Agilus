@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region Using
+using System;
 using System.Threading;
+#endregion
 
 namespace Mouse6d
 {
     class Mouse
     {
+
+        #region Attributs
         public TDx.TDxInput.Device Mouse6d;
 
         public TDx.TDxInput.Vector3D MoveByVector;
@@ -17,7 +21,9 @@ namespace Mouse6d
         public double Vitesse = 100.0;
         
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
+        #endregion
 
+        #region Constructeur
         /// <summary>
         /// Fonction qui initialise la classe
         /// </summary>
@@ -34,7 +40,9 @@ namespace Mouse6d
             MoveByVector = new TDx.TDxInput.Vector3D(0.0, 0.0, 0.0);
             RotateByVector = new TDx.TDxInput.Vector3D(0.0, 0.0, 0.0);
         }
+        #endregion
 
+        #region Fonctions
         /// <summary>
         /// 
         /// </summary>
@@ -56,6 +64,7 @@ namespace Mouse6d
                 if (Translation.X > MaxTransX)
                 {
                     MaxTransX = Translation.X;
+                    Console.WriteLine("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ);
                 }
                 #endregion
 
@@ -63,6 +72,7 @@ namespace Mouse6d
                 if (Translation.Y > MaxTransY)
                 {
                     MaxTransY = Translation.Y;
+                    Console.WriteLine("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ);
                 }
                 #endregion
 
@@ -70,6 +80,7 @@ namespace Mouse6d
                 if (Translation.Z > MaxTransZ)
                 {
                     MaxTransZ = Translation.Z;
+                    Console.WriteLine("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ);
                 }
                 #endregion
 
@@ -78,11 +89,6 @@ namespace Mouse6d
                 {
                     End = true;
                 }
-                #endregion
-
-                #region Calibration print
-                Console.WriteLine("X : {0} | Y : {1} | Z : {2}",MaxTransX, MaxTransY, MaxTransZ);
-                Thread.Sleep(500);
                 #endregion
             }
             #endregion
@@ -143,7 +149,7 @@ namespace Mouse6d
         {
             _shouldStop = true;
         }
+        #endregion 
 
-        // End class
     }
 }
