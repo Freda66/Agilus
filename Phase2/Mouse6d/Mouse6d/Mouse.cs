@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Mouse6d
 {
@@ -18,8 +14,13 @@ namespace Mouse6d
         public double MaxTransZ = 1.0;
 
         public double Vitesse = 1.0;
+        
+        private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
 
-        public void Init()
+        /// <summary>
+        /// Fonction qui initialise la classe
+        /// </summary>
+        public Mouse()
         {
             #region Mouse connection
             Mouse6d = new TDx.TDxInput.Device();
@@ -32,6 +33,9 @@ namespace Mouse6d
             MoveByVector = new TDx.TDxInput.Vector3D(0.0, 0.0, 0.0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Calibrate()
         {
             #region Variables
@@ -43,7 +47,6 @@ namespace Mouse6d
             #region Loop for the calibration
             while (Mouse6d.IsConnected && !End)
             {
-
                 Translation = Mouse6d.Sensor.Translation;
                 NativeKeyboard Keyboard = new NativeKeyboard();
 
@@ -83,19 +86,20 @@ namespace Mouse6d
             #endregion
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Loop()
         {
             #region Variables
             TDx.TDxInput.Vector3D VectorNorm = new TDx.TDxInput.Vector3D();
             TDx.TDxInput.Vector3D Translation;
-
-            bool End = false;
-
+            
             var Norm = Math.Sqrt(Math.Pow(MaxTransX, 2) + Math.Pow(MaxTransY, 2) + Math.Pow(MaxTransZ, 2));
             #endregion
 
             #region Loop which get the information from the mouse and convert to the movement of the robot
-            while (Mouse6d.IsConnected && !End)
+            while (Mouse6d.IsConnected || !_shouldStop)
             {
                 Translation = Mouse6d.Sensor.Translation;
 
@@ -109,7 +113,7 @@ namespace Mouse6d
                 if (VectorNorm.X > 1.0 || VectorNorm.Y > 1.0 || VectorNorm.Z > 1.0)
                 {
                     Console.WriteLine("Error, vector > 1");
-                    End = true;
+                    _shouldStop = true;
                 }
                 #endregion
 
@@ -120,6 +124,14 @@ namespace Mouse6d
                 #endregion
             }
             #endregion
+        }
+
+        /// <summary>
+        /// Fonction qui demande d'arreter le thread en cours d'execution
+        /// </summary>
+        public void RequestStop()
+        {
+            _shouldStop = true;
         }
 
         // End class
