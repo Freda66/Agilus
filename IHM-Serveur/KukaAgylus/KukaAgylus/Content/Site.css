@@ -28,8 +28,39 @@ textarea {
     max-height: 200px;
     border-radius: 6px;
     padding-left: 10px;
-    padding-top:10px;
-    padding-bottom:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-width: 1px;
     background-color: #1c1e22;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+.panel-infos {
+    padding-left: 60px;
+    padding-right: 60px;
+    padding-bottom: 30px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-color: #1c1e22;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    font-weight: normal!important;
+}
+
+.val-info {
+    padding-left:0;
+}
+
+.status-ok {
+    color: rgb(70, 224, 5);
+    font-weight: bold;
+}
+
+.status-ko {
+    color: rgb(224, 70, 5);
+    font-weight: bold;
+}
+
+label{
+    font-weight: normal;
 }
