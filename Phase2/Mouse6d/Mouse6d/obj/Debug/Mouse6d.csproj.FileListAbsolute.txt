@@ -9,3 +9,11 @@ D:\marc\Imerir\Projet Integration\Robotique Agilus\Mouse6d\Mouse6d\obj\Debug\Mou
 D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\Mouse6d.exe.config
 D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\obj\Debug\Mouse6d.exe
 D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\obj\Debug\Mouse6d.pdb
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\Mouse6d.exe
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\Mouse6d.pdb
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\nlx.robot.kuka.controller.dll
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\Stateless.dll
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\obj\Debug\Mouse6d.csprojResolveAssemblyReference.cache
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\NLX.Maurel.exe
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\Wop_Contracts.dll
+D:\marc\Imerir\Projet Integration\Robotique Agilus\Agilus\Phase2\Mouse6d\Mouse6d\bin\Debug\Stateless.xml

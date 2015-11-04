@@ -13,7 +13,7 @@ namespace Mouse6d
         public double MaxTransY = 1.0;
         public double MaxTransZ = 1.0;
 
-        public double Vitesse = 1.0;
+        public double Vitesse = 100.0;
         
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
 
@@ -79,7 +79,7 @@ namespace Mouse6d
                 #endregion
 
                 #region Calibration print
-                Console.WriteLine("X : {0} | Y : {1} | Z : {3}",MaxTransX, MaxTransY, MaxTransZ);
+                Console.WriteLine("X : {0} | Y : {1} | Z : {2}",MaxTransX, MaxTransY, MaxTransZ);
                 Thread.Sleep(500);
                 #endregion
             }
