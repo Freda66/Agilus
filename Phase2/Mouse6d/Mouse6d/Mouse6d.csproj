@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLX.Maurel">
+      <HintPath>..\..\lib\NLX.Maurel.exe</HintPath>
+    </Reference>
     <Reference Include="nlx.robot.kuka.controller">
       <HintPath>..\..\lib\nlx.robot.kuka.controller.dll</HintPath>
     </Reference>
@@ -50,8 +53,12 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\..\lib\TDx.TDxInput.dll</HintPath>
     </Reference>
+    <Reference Include="Wop_Contracts">
+      <HintPath>..\..\lib\Wop_Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mouse.cs" />
     <Compile Include="NativeKeyboard.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
