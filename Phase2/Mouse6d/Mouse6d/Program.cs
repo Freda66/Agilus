@@ -1,128 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using NLX.Robot.Kuka.Controller;
 
 namespace Mouse6d
 {
     class Program
     {
-        static TDx.TDxInput.Device mouse;
-
-        static double maxTransX = 1.0;
-        static double maxTransY = 1.0;
-        static double maxTransZ = 1.0;
-
-        static double vitesse = 1.0;
-
         static void Main(string[] args)
         {
-            Init();
-            
-            Calibrate();
-            //Loop();
-            //TestKeyboard();
-        }
-
-        public static void Init()
-        {
             Console.WriteLine("Start program...");
+            Mouse MyMouse = new Mouse();
+            RobotController MyRobot = new RobotController();
 
-            mouse = new TDx.TDxInput.Device();
-            if (mouse != null)
-            {
-                mouse.Connect();
-            }
+            MyMouse.Calibrate();
 
-            Console.WriteLine("End Init");
-        }
-
-        public static void Calibrate()
-        {
-            bool end = false;
-
-            TDx.TDxInput.Vector3D translation;
-
-            while (mouse.IsConnected && !end)
-            {
-
-                translation = mouse.Sensor.Translation;
-                NativeKeyboard keyboard = new NativeKeyboard();
-
-                #region getMaxX
-                if (translation.X > maxTransX)
-                {
-                    maxTransX = translation.X;
-                }
-                #endregion
-
-                #region getMaxY
-                if (translation.Y > maxTransY)
-                {
-                    maxTransY = translation.Y;
-                }
-                #endregion
-
-                #region getMaxZ
-                if (translation.Z > maxTransZ)
-                {
-                    maxTransZ = translation.Z;
-                }
-                #endregion
-
-                #region break while
-                if (keyboard.IsKeyDown(NativeKeyboard.KeyCode.Enter)) 
-                {
-                    end = true;
-                }
-                #endregion
-            }
-        }
-
-        public static void TestKeyboard()
-        {
-            NativeKeyboard _NativeKeyboard = new NativeKeyboard();
-            var keyboard = mouse.Keyboard;
- 
-            while (true)
-            //while (!keyboard.IsKeyDown((int) NativeKeyboard.KeyCode.Enter))
-            {
-                if (_NativeKeyboard.IsKeyDown(NativeKeyboard.KeyCode.Enter))
-                {
-                    Console.WriteLine("Enter");
-                    Console.WriteLine("End Test");
-                    Thread.Sleep(50);
-                }
-            }
+            // Connexion au robot
+            MyRobot.Connect("192.168.1.1");
             
-        }
+            // Créer un objet thread de l'objet Mouse, fonction Loop
+            Thread MouseThread = new Thread(MyMouse.Loop);
 
-        public static void Loop()
-        {
-            bool end = false;
-            TDx.TDxInput.Vector3D vectorNorm = new TDx.TDxInput.Vector3D();
-            TDx.TDxInput.Vector3D translation;
+            // Demarre le thread.
+            MouseThread.Start();
+            Console.WriteLine("main thread: Starting mouse thread...");
 
-            var norm = Math.Sqrt(Math.Pow(maxTransX, 2) + Math.Pow(maxTransY, 2) + Math.Pow(maxTransZ, 2));
+            // Attend que le thread soit lancé et activé
+            while (!MouseThread.IsAlive);
 
-            while (mouse.IsConnected && !end)
+            // Boucle tant qu'on utilise la souris 
+            bool endMouse = true;
+            while (!endMouse)
             {
-                translation = mouse.Sensor.Translation;
-
-                vectorNorm.X = translation.X / norm * vitesse;
-                vectorNorm.Y = translation.Y / norm * vitesse;
-                vectorNorm.Z = translation.Z / norm * vitesse;
-
-                #region wrong calibration
-                if (vectorNorm.X > 1.0 || vectorNorm.Y > 1.0 || vectorNorm.Z > 1.0)
-                {
-                    Console.WriteLine("Error, vector > 1");
-                    end = true;
-                }
-                #endregion
+                // Met le thread principale (ici) en attente d'une millisecond pour autoriser le thread secondaire à faire quelque chose
+                Thread.Sleep(1);
+                // Envoi la commande au robot
+                MyRobot.StartRelativeMovement();
+                // Convertion des donnees de la souris pour le robot 
+                CartesianPosition CartPositionMouse = new CartesianPosition();
+                CartPositionMouse.A = 0.0; CartPositionMouse.B = 0.0; CartPositionMouse.C = 0.0;
+                CartPositionMouse.X = MyMouse.MoveByVector.X;
+                CartPositionMouse.Y = MyMouse.MoveByVector.Y;
+                CartPositionMouse.Z = MyMouse.MoveByVector.Z;
+                // Envoi les commande de deplacement au robot
+                MyRobot.SetRelativeMovement(CartPositionMouse);
+                // Arret le mouvement
+                MyRobot.StopRelativeMovement();
             }
+
+            // Demande l'arret du thread de la souris
+            MyMouse.RequestStop();
+            
+            // Bloque le thread principale tant que le thread Mouse n'est pas terminé
+            MouseThread.Join(); 
+
+            Console.WriteLine("main thread: mouse thread has terminated.");
+            
+            Console.WriteLine("End program... Press a key to quit...");
+            Console.ReadKey();
         }
 
     // End class
