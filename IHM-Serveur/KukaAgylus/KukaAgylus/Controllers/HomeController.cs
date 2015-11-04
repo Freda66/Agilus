@@ -27,14 +27,6 @@ namespace KukaAgylus.Controllers
             return View();
         }
 
-        public ActionResult BtnConnect_Click(object sender, EventArgs e)
-        {
-            MvcApplication.Logs.Add(new Models.Log("info", "Connecting to the device ..."));
-            // ADD CONNECTION HERE
-
-            return View("Index");
-        }
-        
         [HttpGet]
         public ActionResult GetLogs()
         {
@@ -72,6 +64,25 @@ namespace KukaAgylus.Controllers
                 MvcApplication.MouseInfos.IsCalibrated = true;
             }
             
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult SwitchRobotConnection(bool connect, string ip)
+        {
+            if (connect)
+            {
+                //Connexion du robot
+                MvcApplication.Logs.Add(new Models.Log("info", string.Format("Starting robot connection on {0} ...", ip)));
+                MvcApplication.RobotInfos.IsConnected = true;
+            }
+            else
+            {
+                //Deconnexion du robot
+                MvcApplication.Logs.Add(new Models.Log("info", "Robot disconnected"));
+                MvcApplication.RobotInfos.IsConnected = false;
+            }
+
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
     }
