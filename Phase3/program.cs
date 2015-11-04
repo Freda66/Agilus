@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Timers;
 
 //TODO :  - ROBOT NE VAS PAS A LA BONNE POSITION QUAND ON LANCE LE PLAYTRAJECTORY POUR ALLER DEVANT LE MAGASIN
 //        - FORMULES DE CALCUL NE PRENNENT PAS EN COMPTE LA TRANSFORMATION DE REPERE.
@@ -23,14 +24,14 @@ namespace Mouse
         //CONSTANTES POUR POSITIONS PLATEAU
         public const int NBLIGNESPLATEAU = 4;
         public const int NBCOLONNESPLATEAU = 4;
-        public const double XB = 935.37; //Xb
-        public const double YB = -267.96; //Yb
-        public const double XD = 677.17; //Xd
-        public const double YD = -283.23; //Yd
-        public const double XC = 771.61; //Xc
-        public const double YC = -394.41; //Yc
-        public const double XA = 840.33;
-        public const double YA = -150.12;
+        public const double XD = 935.37;  //Xb
+        public const double YD = -267.96; //Yb
+        public const double XB = 677.17;  //Xd
+        public const double YB = -283.23; //Yd
+        public const double XA = 771.61;  //Xc
+        public const double YA = -394.41; //Yc
+        public const double XC = 840.33;
+        public const double YC = -150.12;
         public const double THETA = Math.PI * 37.674 / 180.0; //Math.Acos((XMID - XORIGINE) / Math.Sqrt(Math.Pow(XMID - XORIGINE, 2) + Math.Pow(YMID - YORIGINE, 2)));
         public  double PASX = Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2));
         public  double PASY = Math.Sqrt(Math.Pow(XA - XB, 2) + Math.Pow(YA - YB, 2));
@@ -46,6 +47,7 @@ namespace Mouse
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_aller_magasin_to_plateau;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_placer_piece;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_retour_magasin;
+       
         public NLX.Robot.Kuka.Controller.CartesianPosition ptsPlateau = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
 
@@ -100,9 +102,9 @@ namespace Mouse
             liste_retour_magasin = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             plateau = new List<Emplacement>();
 
-            NLX.Robot.Kuka.Controller.CartesianPosition pts = new NLX.Robot.Kuka.Controller.CartesianPosition();
+            /*NLX.Robot.Kuka.Controller.CartesianPosition pts = new NLX.Robot.Kuka.Controller.CartesianPosition();
             // Devant magasin
-            /*pts.X = 501.760773;
+            pts.X = 501.760773;
             pts.Y = -168.319458;
             pts.Z = 290.646942;
             pts.A = -77.6867905;
@@ -122,6 +124,7 @@ namespace Mouse
             pts2.C = -15.78833;
 
             liste_aller_magasin.Add(pts2);
+            Console.WriteLine("pts 2");
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts3 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
@@ -135,6 +138,7 @@ namespace Mouse
             pts3.C = -15.78833;
 
             liste_aller_magasin.Add(pts3);
+            Console.WriteLine("pts 3");
 
 
             // Fermeture pince
@@ -143,7 +147,7 @@ namespace Mouse
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts4 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
-            // Retrait
+            // lève la pièce
             pts4.X = 515.147888;
             pts4.Y = 237.083374;
             pts4.Z = 297.377289;
@@ -152,10 +156,11 @@ namespace Mouse
             pts4.C = -15.78833;
 
             liste_aller_magasin_to_plateau.Add(pts4);
+            Console.WriteLine("pts 4");
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts5 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
-            // Au dessus origine plateau
+            // recul pour retrait piece
             pts5.X = 515.147888;
             pts5.Y = 75.3249283;
             pts5.Z = 297.377289;
@@ -163,10 +168,11 @@ namespace Mouse
             pts5.B = 85.9736862;
             pts5.C = -15.78833;
             liste_aller_magasin_to_plateau.Add(pts5);
+            Console.WriteLine("pts 5");
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts6 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
-            // Au dessus origine plateau
+            // Rotation vers plateau
             pts6.X = 660.406555;
             pts6.Y = -143.749481;
             pts6.Z = 431.472351;
@@ -174,20 +180,22 @@ namespace Mouse
             pts6.B = 2.0946629;
             pts6.C = -90.567405;
             liste_aller_magasin_to_plateau.Add(pts6);
+            Console.WriteLine("pts 6");
 
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts7 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
             // Au dessus origine plateau
-            pts7.X = 935.379639;
-            pts7.Y = -267.96167;
+            pts7.X = 677.17;
+            pts7.Y = -283.23;
             pts7.Z = 391.337982;
             pts7.A = -107.49276;
             pts7.B = 2.03317857;
             pts7.C = -90.54730;
             liste_aller_magasin_to_plateau.Add(pts7);
+            Console.WriteLine("pts 7");
 
-            NLX.Robot.Kuka.Controller.CartesianPosition pts8 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+            /*NLX.Robot.Kuka.Controller.CartesianPosition pts8 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
             // Au dessus origine plateau
             pts8.X = 935.379639;
@@ -196,7 +204,7 @@ namespace Mouse
             pts8.A = -107.49276;
             pts8.B = 2.03317857;
             pts8.C = -90.54730; 
-            liste_aller_magasin_to_plateau.Add(pts8);
+            liste_aller_magasin_to_plateau.Add(pts8);*/
 
 
 
@@ -205,8 +213,8 @@ namespace Mouse
                 for (int j = 0; j < NBCOLONNESPLATEAU; j++)
                 {
 
-                    double posx = XB - j * PASX * Math.Cos(THETA) + i * PASY * Math.Sin(THETA);
-                    double posy = YB - i * PASY * Math.Cos(THETA) - j * PASX * Math.Sin(THETA);
+                    double posx = XB + j * PASX * Math.Cos(THETA) + i * PASY * Math.Sin(THETA);
+                    double posy = YB - i * PASY * Math.Cos(THETA) + j * PASX * Math.Sin(THETA);
 
 
                     
@@ -377,7 +385,7 @@ namespace Mouse
             robot.PlayTrajectory(liste_aller_magasin_to_plateau);
 
 
-            PlacerPiece();
+            //PlacerPiece();
 
 
 
@@ -392,15 +400,33 @@ namespace Mouse
 
                 if (!plateau.ElementAt(i).isBusy)
                 {
+                    // Indique que l'emplacement est maintenant occupé
                     bool vrai = true;
                     Emplacement empl = new Emplacement();
                     empl.isBusy=true;
                     empl.point=plateau.ElementAt(i).point;
-
                     plateau.RemoveAt(i);
                     plateau.Insert(i,empl);
-
+                    // Ajoute la position de l'emplacement à la liste
                     liste_placer_piece.Add(plateau.ElementAt(i).point);
+
+                    // On descend la pièce
+                    empl.point.Z-=250;
+                    // Ajout de la position à la liste
+                    liste_placer_piece.Add(empl.point);
+                    // On effectue la trajectoire
+                    robot.PlayTrajectory(liste_placer_piece);
+                    // On relache la pièce
+                    robot.OpenGripper();
+                    // On remonte 
+                    empl.point.Z += 250;
+
+                    // On ajout à la liste
+                    liste_retour_magasin.Add(empl.point);
+                    // On se dégage de la pièce
+                    robot.PlayTrajectory(liste_retour_magasin);
+                    // On peux arreter une fois qu'on a mis la pièce
+                    break;
 
                 }
 
@@ -412,54 +438,7 @@ namespace Mouse
         
         private void buttonPlacerPiece_Click(object sender, EventArgs e)
         {
-            var position_libre = -1;
-            for (int i = 0; i < plateau.Count; i++)
-            {
-                if (!plateau.ElementAt(i).isBusy)
-                {
-                    position_libre = i;
-                    break;
-                }
-            }
-
-
-            if (position_libre >= 0)
-            {
-                // On donne la position de l'emplacement libre
-                pts.X = plateau.ElementAt(position_libre).point.X;
-                pts.Y = plateau.ElementAt(position_libre).point.Y;
-                pts.Z = plateau.ElementAt(position_libre).point.Z;
-                pts.A = plateau.ElementAt(position_libre).point.A;
-                pts.B = plateau.ElementAt(position_libre).point.B;
-                pts.C = plateau.ElementAt(position_libre).point.C;
-
-                liste_placer_piece.Add(pts);
-
-                // On descend pour poser la pièce
-                pts.Z = plateau.ElementAt(position_libre).point.Z - 200;
-                liste_placer_piece.Add(pts);
-
-                // On joue la trajectoire
-                robot.PlayTrajectory(liste_placer_piece);
-                // On ouvre la pince pour lacher le cylindre
-                robot.OpenGripper();
-
-                // On remonte la pince pour se dégager
-                robot.StartRelativeMovement();
-                pts.X = 0;
-                pts.Y = 0;
-                pts.Z += 200;
-                pts.A = 0;
-                pts.B = 0;
-                pts.C = 0;
-                robot.SetRelativeMovement(pts);
-                robot.StopRelativeMovement();
-
-                // On retourne au magasin
-                robot.PlayTrajectory(liste_aller_magasin);
-
-
-            }
+            PlacerPiece();
         }
     }
 }
