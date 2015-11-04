@@ -56,5 +56,23 @@ namespace KukaAgylus.Controllers
             return Json(MvcApplication.RobotInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public ActionResult SwitchMouseCalibration(bool start)
+        {
+            if(start)
+            {
+                //Démarrage de la calibration
+                MvcApplication.Logs.Add(new Models.Log("info", "Starting mouse calibration ..."));
+                MvcApplication.MouseInfos.IsCalibrated = false;
+            }
+            else
+            {
+                //Arrêt de la calibration
+                MvcApplication.Logs.Add(new Models.Log("info", "Stop mouse calibration"));
+                MvcApplication.MouseInfos.IsCalibrated = true;
+            }
+            
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
