@@ -11,6 +11,8 @@ namespace KukaAgylus
     public class MvcApplication : System.Web.HttpApplication
     {
         public static List<Models.Log> Logs = new List<Models.Log>();
+        public static Models.RobotInfos RobotInfos = new Models.RobotInfos();
+        public static Models.Mouse6DInfos MouseInfos = new Models.Mouse6DInfos();
 
         protected void Application_Start()
         {
