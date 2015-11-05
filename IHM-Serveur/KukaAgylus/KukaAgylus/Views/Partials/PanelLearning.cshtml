@@ -1,1 +1,36 @@
-﻿
+﻿<div class="col-lg-12">
+    <h2>Learning</h2>
+    <p class="tips">Description here</p>
+    <div class="input-group">
+        <span class="input-group-addon" id="ipadress-addon">Process</span>
+        <input type="text" id="input-selected-mode" class="form-control" placeholder="No Process selected">
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Mode
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" id="learning-process-list">
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    function DisplayProcessList(){
+        $.ajax({
+            url: "/Home/GetProcessList",
+            type: "get",
+            success: function (response, textStatus, jqXHR) {
+                $('#learning-process-list').empty();
+                for (var i in response) {
+                    var entry = "<li><a onclick=''>" + response[i] + "</a></li>";
+                    $('#learning-process-list').append(entry);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+    DisplayProcessList();
+
+</script>

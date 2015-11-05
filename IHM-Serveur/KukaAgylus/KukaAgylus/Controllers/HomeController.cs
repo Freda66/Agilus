@@ -101,5 +101,13 @@ namespace KukaAgylus.Controllers
 
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public ActionResult GetProcessList()
+        {
+            var fakeList = new List<string>() { "toto", "emile" };
+
+            return Json(fakeList, JsonRequestBehavior.AllowGet);
+        }
     }
 }
