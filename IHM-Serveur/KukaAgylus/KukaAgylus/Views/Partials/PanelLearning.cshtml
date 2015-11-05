@@ -6,7 +6,7 @@
         <input type="text" id="input-selected-mode" class="form-control" placeholder="No Process selected">
         <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Mode
+                Load
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" id="learning-process-list">
@@ -16,6 +16,10 @@
 </div>
 
 <script>
+    function LoadProcess(processName){
+        console.log("Launch process: " + processName);
+    }
+
     function DisplayProcessList(){
         $.ajax({
             url: "/Home/GetProcessList",
@@ -23,7 +27,7 @@
             success: function (response, textStatus, jqXHR) {
                 $('#learning-process-list').empty();
                 for (var i in response) {
-                    var entry = "<li><a onclick=''>" + response[i] + "</a></li>";
+                    var entry = "<li><a onclick='LoadProcess(\"" + response[i] + "\")'>" + response[i] + "</a></li>";
                     $('#learning-process-list').append(entry);
                 }
             },
