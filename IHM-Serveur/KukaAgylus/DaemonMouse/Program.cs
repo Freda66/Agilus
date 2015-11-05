@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace Mouse6D
+namespace DaemonMouse
 {
     class Program
     {
@@ -14,7 +14,7 @@ namespace Mouse6D
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Daemon souris 6D en cours");
+            Console.WriteLine("Starting mouse6D daemon");
 
             device = new TDx.TDxInput.Device();
             var connect = false;
@@ -26,7 +26,7 @@ namespace Mouse6D
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Connection failed !: ", ex.Data);
+                Console.WriteLine("Mouse connection failed !: ", ex.Data);
             }
 
             while (connect)
@@ -36,14 +36,15 @@ namespace Mouse6D
 
                 try
                 {
-                    Mouse.MouseSoapClient serv = new Mouse.MouseSoapClient();
-                
+                    ServiceMouse.MouseSoapClient service = new ServiceMouse.MouseSoapClient();
+
                     Console.WriteLine("Translation : {0}\r\nRotation : {1}",
                         string.Format("X={0} Y={1} Z={2}", translation.X, translation.Y, translation.Z),
-                        string.Format("X={0} Y={1} Z={2}", rotation.X, rotation.Y, rotation.Z));
+                        string.Format("X={0} Y={1} Z={2} Angle={3}", rotation.X, rotation.Y, rotation.Z, rotation.Angle));
 
-                    serv.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z);
-                } catch(Exception e) {}
+                    service.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z, rotation.Angle);
+                }
+                catch (Exception e) { }
 
                 Thread.Sleep(100);
             }

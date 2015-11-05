@@ -1,6 +1,0 @@
-c:\users\loïc\documents\visual studio 2015\Projects\Mouse6D\Mouse6D\bin\Debug\Mouse6D.exe.config
-C:\Users\Loïc\Documents\Visual Studio 2015\Projects\Mouse6D\Mouse6D\bin\Debug\Mouse6D.exe
-C:\Users\Loïc\Documents\Visual Studio 2015\Projects\Mouse6D\Mouse6D\bin\Debug\Mouse6D.pdb
-C:\Users\Loïc\Documents\Visual Studio 2015\Projects\Mouse6D\Mouse6D\obj\Debug\Mouse6D.csprojResolveAssemblyReference.cache
-C:\Users\Loïc\Documents\Visual Studio 2015\Projects\Mouse6D\Mouse6D\obj\Debug\Mouse6D.exe
-C:\Users\Loïc\Documents\Visual Studio 2015\Projects\Mouse6D\Mouse6D\obj\Debug\Mouse6D.pdb

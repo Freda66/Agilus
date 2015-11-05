@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="bfd95ad9-62bb-4a6b-82d4-76753c132c1d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="965da7ce-accc-4571-8dd9-14ba7540697d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,8 +22,8 @@
     <MetadataSource Address="http://localhost:22338/Webservices/Mouse.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Mouse.disco" MetadataType="Disco" ID="f5fc6ea9-2cd1-40ba-84df-c63c368d3cc8" SourceId="1" SourceUrl="http://localhost:22338/Webservices/Mouse.asmx?disco" />
-    <MetadataFile FileName="Mouse.wsdl" MetadataType="Wsdl" ID="c8f41ee3-39eb-4651-8172-9f3baf3ab756" SourceId="1" SourceUrl="http://localhost:22338/Webservices/Mouse.asmx?wsdl" />
+    <MetadataFile FileName="Mouse.disco" MetadataType="Disco" ID="9b4fe237-b93e-42ee-bc04-d4ab5a09f6fc" SourceId="1" SourceUrl="http://localhost:22338/Webservices/Mouse.asmx?disco" />
+    <MetadataFile FileName="Mouse.wsdl" MetadataType="Wsdl" ID="4a06d701-f076-4e7f-98d2-803cd343cf92" SourceId="1" SourceUrl="http://localhost:22338/Webservices/Mouse.asmx?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

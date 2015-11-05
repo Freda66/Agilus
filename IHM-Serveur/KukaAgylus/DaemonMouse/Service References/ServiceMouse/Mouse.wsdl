@@ -11,6 +11,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="rx" type="s:double" />
             <s:element minOccurs="1" maxOccurs="1" name="ry" type="s:double" />
             <s:element minOccurs="1" maxOccurs="1" name="rz" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="angle" type="s:double" />
           </s:sequence>
         </s:complexType>
       </s:element>

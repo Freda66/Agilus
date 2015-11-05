@@ -8,27 +8,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Mouse6D.Mouse {
+namespace DaemonMouse.ServiceMouse {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://localhost/", ConfigurationName="Mouse.MouseSoap")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://localhost/", ConfigurationName="ServiceMouse.MouseSoap")]
     public interface MouseSoap {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://localhost/SendMousePosition", ReplyAction="*")]
-        void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz);
+        void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz, double angle);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://localhost/SendMousePosition", ReplyAction="*")]
-        System.Threading.Tasks.Task SendMousePositionAsync(double tx, double ty, double tz, double rx, double ry, double rz);
+        System.Threading.Tasks.Task SendMousePositionAsync(double tx, double ty, double tz, double rx, double ry, double rz, double angle);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface MouseSoapChannel : Mouse6D.Mouse.MouseSoap, System.ServiceModel.IClientChannel {
+    public interface MouseSoapChannel : DaemonMouse.ServiceMouse.MouseSoap, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class MouseSoapClient : System.ServiceModel.ClientBase<Mouse6D.Mouse.MouseSoap>, Mouse6D.Mouse.MouseSoap {
+    public partial class MouseSoapClient : System.ServiceModel.ClientBase<DaemonMouse.ServiceMouse.MouseSoap>, DaemonMouse.ServiceMouse.MouseSoap {
         
         public MouseSoapClient() {
         }
@@ -49,12 +49,12 @@ namespace Mouse6D.Mouse {
                 base(binding, remoteAddress) {
         }
         
-        public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz) {
-            base.Channel.SendMousePosition(tx, ty, tz, rx, ry, rz);
+        public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz, double angle) {
+            base.Channel.SendMousePosition(tx, ty, tz, rx, ry, rz, angle);
         }
         
-        public System.Threading.Tasks.Task SendMousePositionAsync(double tx, double ty, double tz, double rx, double ry, double rz) {
-            return base.Channel.SendMousePositionAsync(tx, ty, tz, rx, ry, rz);
+        public System.Threading.Tasks.Task SendMousePositionAsync(double tx, double ty, double tz, double rx, double ry, double rz, double angle) {
+            return base.Channel.SendMousePositionAsync(tx, ty, tz, rx, ry, rz, angle);
         }
     }
 }

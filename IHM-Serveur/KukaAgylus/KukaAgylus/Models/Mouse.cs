@@ -4,6 +4,7 @@ using KukaAgylus.Models;
 using System.Threading;
 using System.Collections.Generic;
 using NLX.Robot.Kuka.Controller;
+using TDx.TDxInput;
 #endregion
 
 namespace Mouse6d
@@ -14,9 +15,8 @@ namespace Mouse6d
         public MouseInfos MouseInfos { get; set; }
 
         #region Attributs
-
-        public TDx.TDxInput.Vector3D MoveByVector;
-        public TDx.TDxInput.Vector3D RotateByVector;
+        public Vector3D MoveByVector;
+        public Vector3D RotateByVector;
 
         public double MaxTransX = 1.0;
         public double MaxTransY = 1.0;
@@ -26,12 +26,9 @@ namespace Mouse6d
         public double Vitesse = 100.0;
 
         private volatile bool _calibrationEnd = false;
-
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
-        private bool _isCalibrated = false;
 
         public CartesianPosition CartPosition = new CartesianPosition();
-
         #endregion
 
 
@@ -41,8 +38,8 @@ namespace Mouse6d
         /// </summary>
         public Mouse()
         {
-            MoveByVector = new TDx.TDxInput.Vector3D();
-            RotateByVector = new TDx.TDxInput.Vector3D();
+            MoveByVector = new Vector3D();
+            RotateByVector = new Vector3D();
         }
         #endregion
 
@@ -52,10 +49,8 @@ namespace Mouse6d
         /// </summary>
         public void Calibrate()
         {
-            _isCalibrated = false;
             #region Variables
-
-            TDx.TDxInput.Vector3D Translation;
+            Vector3D Translation;
             #endregion
             
             #region Loop for the calibration
@@ -90,7 +85,7 @@ namespace Mouse6d
                 #endregion
             }
             LogsList.Add(new Log("info", "End Calibration mouse"));
-            _isCalibrated = true;
+            MouseInfos.IsCalibrated = true;
             #endregion
         }
 
@@ -100,9 +95,9 @@ namespace Mouse6d
         public void Loop()
         {
             #region Variables
-            TDx.TDxInput.Vector3D VectorNorm = new TDx.TDxInput.Vector3D();
-            TDx.TDxInput.Vector3D Translation;
-            TDx.TDxInput.AngleAxis Rotation;
+            Vector3D VectorNorm = new Vector3D();
+            Vector3D Translation;
+            AngleAxis Rotation;
 
             var Norm = Math.Sqrt(Math.Pow(MaxTransX, 2) + Math.Pow(MaxTransY, 2) + Math.Pow(MaxTransZ, 2));
             #endregion
@@ -178,18 +173,18 @@ namespace Mouse6d
         }
         #endregion
         
-        public TDx.TDxInput.Vector3D GetTranslationVector()
+        public Vector3D GetTranslationVector()
         {
-            TDx.TDxInput.Vector3D translation = new TDx.TDxInput.Vector3D();
+            Vector3D translation = new Vector3D();
             translation.X = MouseInfos.TranslationX;
             translation.Y = MouseInfos.TranslationY;
             translation.Z = MouseInfos.TranslationZ;
             return translation;
         }
 
-        public TDx.TDxInput.AngleAxis GetRotationAxis()
+        public AngleAxis GetRotationAxis()
         {
-            TDx.TDxInput.AngleAxis rotation = new TDx.TDxInput.AngleAxis();
+            AngleAxis rotation = new AngleAxis();
             rotation.X = MouseInfos.RotationX;
             rotation.Y = MouseInfos.RotationY;
             rotation.Z = MouseInfos.RotationZ;

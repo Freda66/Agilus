@@ -17,7 +17,7 @@ namespace KukaAgylus.Webservices
     public class Mouse : System.Web.Services.WebService
     {
         [WebMethod]
-        public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz)
+        public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz, double angle)
         {
             var mouseInfos = MvcApplication.MouseInfos;
 
@@ -29,7 +29,9 @@ namespace KukaAgylus.Webservices
             mouseInfos.RotationY = ry;
             mouseInfos.RotationZ = rz;
 
-            MvcApplication.Logs.Add(new Models.Log("daemon", string.Format("Receive mouse vector : X={0}, Y={1}, Z={2}, Rx={3}, Ry={4}, Rz={5}", tx, ty, tz, rx, ry, rz)));
+            mouseInfos.Angle = angle;
+
+            MvcApplication.Logs.Add(new Models.Log("daemon", string.Format("Receive mouse vector : X={0}, Y={1}, Z={2}, Rx={3}, Ry={4}, Rz={5}, Angle{6}", tx, ty, tz, rx, ry, rz, angle)));
         }
 
     }
