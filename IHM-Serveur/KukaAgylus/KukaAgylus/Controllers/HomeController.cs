@@ -45,6 +45,11 @@ namespace KukaAgylus.Controllers
             return View();
         }
 
+        public ActionResult Infos()
+        {
+            return View();
+        }
+
         [HttpGet]
         public ActionResult GetLogs()
         {

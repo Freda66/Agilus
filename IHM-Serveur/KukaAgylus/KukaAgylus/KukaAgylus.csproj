@@ -198,6 +198,7 @@
     <Content Include="Views\Partials\PanelControl.cshtml" />
     <Content Include="Views\Partials\PanelLearning.cshtml" />
     <Content Include="Views\Home\Console.cshtml" />
+    <Content Include="Views\Home\Infos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
