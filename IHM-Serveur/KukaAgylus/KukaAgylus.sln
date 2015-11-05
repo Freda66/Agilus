@@ -4,11 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KukaAgylus", "KukaAgylus\KukaAgylus.csproj", "{083DF029-0C6D-458E-8BEF-833573B3C027}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B00B51B4-3AA3-47B9-8271-7A9112E22AB4} = {B00B51B4-3AA3-47B9-8271-7A9112E22AB4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaemonMouse", "DaemonMouse\DaemonMouse.csproj", "{B00B51B4-3AA3-47B9-8271-7A9112E22AB4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{083DF029-0C6D-458E-8BEF-833573B3C027} = {083DF029-0C6D-458E-8BEF-833573B3C027}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
