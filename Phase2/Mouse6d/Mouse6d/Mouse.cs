@@ -19,7 +19,8 @@ namespace Mouse6d
         public double MaxTransZ = 1.0;
 
         public double Treshold = 0.1; // Filled by a textField
-        public double Vitesse = 100.0;
+        public double VitesseTranslation = 100.0;
+        public double VitesseRotation = 2.0;
         
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
         #endregion
@@ -130,24 +131,57 @@ namespace Mouse6d
 
                 #region Movement vector send to the robot
                 // Translation alone
-                if (VectorNorm.X > Treshold || VectorNorm.Y > Treshold || VectorNorm.Z > Treshold)
+                if (Math.Abs(VectorNorm.X) > Treshold || Math.Abs(VectorNorm.Y) > Treshold || Math.Abs(VectorNorm.Z) > Treshold)
                 {
-                    MoveByVector.X = VectorNorm.X * Vitesse;
-                    MoveByVector.Y = VectorNorm.Y * Vitesse;
-                    MoveByVector.Z = VectorNorm.Z * Vitesse;
+                    MoveByVector.X = VectorNorm.X * VitesseTranslation;
+                    MoveByVector.Y = VectorNorm.Y * VitesseTranslation;
+                    MoveByVector.Z = VectorNorm.Z * VitesseTranslation;
                     RotateByVector.X = 0.0;
                     RotateByVector.Y = 0.0;
                     RotateByVector.Z = 0.0;
                 }
                 // Rotation alone
-                else if (Rotation.X > Treshold || Rotation.Y > Treshold || Rotation.Z > Treshold)
+                else if (Math.Abs(Rotation.X) > Treshold || Math.Abs(Rotation.Y) > Treshold || Math.Abs(Rotation.Z) > Treshold)
                 {
                     MoveByVector.X = 0.0;
                     MoveByVector.Y = 0.0;
                     MoveByVector.Z = 0.0;
-                    RotateByVector.X = Rotation.X;
-                    RotateByVector.Y = Rotation.Y;
-                    RotateByVector.Z = Rotation.Z;
+
+                    #region Rotation X first
+                    if (Math.Abs(Rotation.X) > Math.Abs(Rotation.Y) && Math.Abs(Rotation.X) > Math.Abs(Rotation.Z))
+                    {
+                        RotateByVector.X = Rotation.X * VitesseRotation;
+                        RotateByVector.Y = 0.0;
+                        RotateByVector.Z = 0.0;
+                    }
+                    #endregion
+
+                    #region Rotation Y first
+                    if (Math.Abs(Rotation.Y) > Math.Abs(Rotation.X) && Math.Abs(Rotation.Y) > Math.Abs(Rotation.Z))
+                    {
+                        RotateByVector.X = 0.0;
+                        RotateByVector.Y = Rotation.Y * VitesseRotation;
+                        RotateByVector.Z = 0.0;
+                    }
+                    #endregion
+
+                    #region Rotation Z first
+                    if (Math.Abs(Rotation.Z) > Math.Abs(Rotation.Y) && Math.Abs(Rotation.Z) > Math.Abs(Rotation.X))
+                    {
+                        RotateByVector.X = 0.0;
+                        RotateByVector.Y = 0.0;
+                        RotateByVector.Z = Rotation.Z * VitesseRotation;
+                    }
+                    #endregion
+                }
+                else
+                {
+                    MoveByVector.X = 0.0;
+                    MoveByVector.Y = 0.0;
+                    MoveByVector.Z = 0.0;
+                    RotateByVector.X = 0.0;
+                    RotateByVector.Y = 0.0;
+                    RotateByVector.Z = 0.0;
                 }
                 #endregion
             }
