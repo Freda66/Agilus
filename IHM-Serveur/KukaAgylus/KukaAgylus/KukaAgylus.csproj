@@ -167,6 +167,7 @@
     <Content Include="Views\Partials\ConsoleLog.cshtml" />
     <Content Include="Views\Partials\PanelInfos.cshtml" />
     <Content Include="Views\Partials\PanelControl.cshtml" />
+    <Content Include="Views\Partials\PanelLearning.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

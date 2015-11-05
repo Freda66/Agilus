@@ -1,34 +1,71 @@
 ﻿<div class="col-lg-12">
     <h2>Mouse Calibration</h2>
-    <p>Descriptions des commandes</p>
+    <p class="tips">Mouse calibration is use to know your max and min range. Calibration must be done in order to move correctly the robot in "Learning" mode.<br/>In order to complete this step, "start" calibration and move all mouse's axis to max range, then "stop" the calibration process.</p>
     <input type="hidden" id="hf-calibration-state" value="stop" />
     <p><input type="button" id="btn-mouse-calib" class="btn btn-default" title="Calibration" value="Start calibration" onclick="BtnCalibrateClick()" /></p>
 </div>
 
-
-
 <div class="col-lg-12">
     <h2>Robot Initalisation</h2>
-    <p>Descriptions des commandes</p>
+    <p class="tips">You have to set the robot ip adress and open the connection to the device in order to use the modes listed bellow.</pclass="tips">
     <p>
+        <input type="hidden" id="hf-connection-state" value="disconnected" />
         <div class="input-group">
             <span class="input-group-addon" id="ipadress-addon">@@Ip</span>
-            <input type="text" class="form-control" placeholder="ex: 192.168.1.1" aria-describedby="ipadress-addon">
+            <input type="text" id="input-ipadress" class="form-control" placeholder="Default: 192.168.1.1" aria-describedby="ipadress-addon">
         </div>
     </p>
-    <p><input type="button" class="btn btn-default" id="btn-connect-rob" title="Connect" value="Connect &raquo;" onclick="location.href='@Url.Action("BtnConnect_Click", "Home")'" /></p>
-
-
+    <p><input type="button" class="btn btn-default" id="btn-rob-connect" title="Connect" value="Connect" onclick="BtnConnectClick()" /></p>
 </div>
 <div class="col-lg-12">
     <h2>Robot Settings</h2>
-    <p>Descriptions des commandes</p>
-    <p><input type="button" class="btn btn-default" title="Connect" value="Connect &raquo;" onclick="location.href='@Url.Action("BtnConnect_Click", "Home")'" /></p>
+    <p class="tips">Mode selector allows you to change robot behaviour. In "Learning mode", you can move the robot with your connected mouse and record points or orders. Then, you will be able to execute the process with "Processing" mode.</p>
+    <p>
+        <div class="input-group">
+            <input type="text" id="input-selected-mode" class="form-control" placeholder="No selected Mode" readonly="readonly">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Mode
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a onclick="SetRobotMode('Learning')">Learning</a></li>
+                    <li><a onclick="SetRobotMode('Processing')">Processing</a></li>
+                </ul>
+            </div>
+        </div>
+    </p>
+    <p class="tips">You can set robot's mouvements velocity for both modes.</p>
+    <p>
+        <div class="input-group">
+            <span class="input-group-addon" id="velocity-addon">Velocity</span>
+            <input type="text" id="input-velocity" class="form-control" placeholder="Default: 1.0" aria-describedby="velocity-addon">
+        </div>
+    </p>
+    <p><input type="button" class="btn btn-default" title="Apply robot settings" value="Apply settings" onclick="BtnApplyClick()" /></p>
 </div>
 
-
-
 <script>
+    function BtnApplyClick() {
+        $.ajax({
+            url: "/Home/ApplyRobotSettings",
+            type: "get",
+            data: { mode: $('#input-selected-mode').val(), velocity: $('#input-velocity').val() },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateRobotInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function SetRobotMode(selectedMode) {
+        $('#input-selected-mode').val(selectedMode);
+    }
+
     function BtnCalibrateClick() {
         $.ajax({
             url: "/Home/SwitchMouseCalibration",
@@ -46,6 +83,33 @@
                 }
                 if (typeof (UpdateLogs) == 'function') UpdateLogs();
                 if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function BtnConnectClick() {
+        var adr =
+        $.ajax({
+            url: "/Home/SwitchRobotConnection",
+            type: "get",
+            data: {
+                connect: ($('#hf-connection-state').val() == "disconnected"),
+                ip: ($('#input-ipadress').val() != "") ? $('#input-ipadress').val() : "192.168.1.1"
+            },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    if ($('#hf-connection-state').val() == "disconnected") {
+                        $('#hf-connection-state').val("connected");
+                        $('#btn-rob-connect').val("Disconnect");
+                    } else {
+                        $('#hf-connection-state').val("disconnected");
+                        $('#btn-rob-connect').val("Connect");
+                    }
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateRobotInfos();
             },
             error: function (jqXHR, textStatus, errorThrown) {
             }
