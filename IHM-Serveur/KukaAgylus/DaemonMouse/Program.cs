@@ -44,9 +44,9 @@ namespace DaemonMouse
 
                     service.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z, rotation.Angle);
                 }
-                catch (Exception e) { }
+                catch (Exception e) { Console.WriteLine(e.Data); }
 
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
 
             Console.WriteLine("Daemon mouse closed !");
