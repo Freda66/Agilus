@@ -33,8 +33,8 @@ namespace Mouse
         public const double XC = 840.33;
         public const double YC = -150.12;
         public const double THETA = Math.PI * 37.674 / 180.0; //Math.Acos((XMID - XORIGINE) / Math.Sqrt(Math.Pow(XMID - XORIGINE, 2) + Math.Pow(YMID - YORIGINE, 2)));
-        public  double PASX = Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2));
-        public  double PASY = Math.Sqrt(Math.Pow(XA - XB, 2) + Math.Pow(YA - YB, 2));
+        public  double PASX = Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2))/NBCOLONNESPLATEAU-1;
+        public double PASY = Math.Sqrt(Math.Pow(XA - XB, 2) + Math.Pow(YA - YB, 2)) / NBLIGNESPLATEAU - 1;
 
 
         static TDx.TDxInput.Device device;
@@ -128,7 +128,6 @@ namespace Mouse
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts3 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
-
             // Pièce saisie 
             pts3.X = 515.147888;
             pts3.Y = 237.083374;
@@ -220,10 +219,10 @@ namespace Mouse
                     
                     ptsPlateau.X = posx;
                     ptsPlateau.Y = posy;
-                    ptsPlateau.Z = 347.88;
-                    ptsPlateau.A = 31.97;
-                    ptsPlateau.B = 1.26;
-                    ptsPlateau.C = 92.69;
+                    ptsPlateau.Z = 391.337982;
+                    ptsPlateau.A = -107.49276;
+                    ptsPlateau.B = 2.03317857;
+                    ptsPlateau.C = -90.54730;
                     bool busy = false;
 
                     Emplacement temp;
@@ -392,53 +391,58 @@ namespace Mouse
 
         }
 
-        private void PlacerPiece()
+        
+        private void buttonPlacerPiece_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < plateau.Count; i++)
             {
-
-
                 if (!plateau.ElementAt(i).isBusy)
                 {
                     // Indique que l'emplacement est maintenant occupé
                     bool vrai = true;
                     Emplacement empl = new Emplacement();
-                    empl.isBusy=true;
-                    empl.point=plateau.ElementAt(i).point;
+                    empl.isBusy = true;
+                    empl.point = plateau.ElementAt(i).point;
                     plateau.RemoveAt(i);
-                    plateau.Insert(i,empl);
+                    plateau.Insert(i, empl);
                     // Ajoute la position de l'emplacement à la liste
                     liste_placer_piece.Add(plateau.ElementAt(i).point);
 
+                    Console.WriteLine("Point detected : " + i + " => " + "X: " + empl.point.X + "Y: " + empl.point.Y + "Z: " + empl.point.Z + "A: " + empl.point.A + "B: " + empl.point.B + "C: " + empl.point.C);
+
+                    Emplacement empl2 = new Emplacement();
+                    empl2.isBusy = true;
+                    empl2.point = plateau.ElementAt(i).point;
+
+
                     // On descend la pièce
-                    empl.point.Z-=250;
+                    empl2.point.Z -= 250;
                     // Ajout de la position à la liste
-                    liste_placer_piece.Add(empl.point);
+                    liste_placer_piece.Add(empl2.point);
                     // On effectue la trajectoire
                     robot.PlayTrajectory(liste_placer_piece);
                     // On relache la pièce
                     robot.OpenGripper();
+
+
+                    Emplacement empl3 = new Emplacement();
+                    empl3.isBusy = true;
+                    empl3.point = plateau.ElementAt(i).point;
+
+
                     // On remonte 
-                    empl.point.Z += 250;
+                    empl3.point.Z += 250;
+
+                    //Console.WriteLine("X:" + empl3.point.X + "Y:" + empl3.point.Y + "Z:" + empl3.point.Z + "A:" + empl3.point.A + "B:" + empl3.point.B + "C:" + empl3.point.C);
 
                     // On ajout à la liste
-                    liste_retour_magasin.Add(empl.point);
+                    liste_retour_magasin.Add(empl3.point);
                     // On se dégage de la pièce
                     robot.PlayTrajectory(liste_retour_magasin);
                     // On peux arreter une fois qu'on a mis la pièce
                     break;
-
                 }
-
-                   
-           }
-            
-        }
-
-        
-        private void buttonPlacerPiece_Click(object sender, EventArgs e)
-        {
-            PlacerPiece();
+            }   
         }
     }
 }
