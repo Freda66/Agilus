@@ -20,7 +20,7 @@ namespace Mouse6d
 
         public double Treshold = 0.1; // Filled by a textField
         public double VitesseTranslation = 100.0;
-        public double VitesseRotation = 2.0;
+        public double VitesseRotation = 0.2;
         
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
         #endregion
@@ -150,7 +150,7 @@ namespace Mouse6d
                     #region Rotation X first
                     if (Math.Abs(Rotation.X) > Math.Abs(Rotation.Y) && Math.Abs(Rotation.X) > Math.Abs(Rotation.Z))
                     {
-                        RotateByVector.X = Rotation.X * VitesseRotation;
+                        RotateByVector.X = Rotation.Angle * VitesseRotation;
                         RotateByVector.Y = 0.0;
                         RotateByVector.Z = 0.0;
                     }
@@ -160,7 +160,7 @@ namespace Mouse6d
                     if (Math.Abs(Rotation.Y) > Math.Abs(Rotation.X) && Math.Abs(Rotation.Y) > Math.Abs(Rotation.Z))
                     {
                         RotateByVector.X = 0.0;
-                        RotateByVector.Y = Rotation.Y * VitesseRotation;
+                        RotateByVector.Y = Rotation.Angle * VitesseRotation;
                         RotateByVector.Z = 0.0;
                     }
                     #endregion
@@ -170,7 +170,7 @@ namespace Mouse6d
                     {
                         RotateByVector.X = 0.0;
                         RotateByVector.Y = 0.0;
-                        RotateByVector.Z = Rotation.Z * VitesseRotation;
+                        RotateByVector.Z = Rotation.Angle * VitesseRotation;
                     }
                     #endregion
                 }
@@ -184,6 +184,8 @@ namespace Mouse6d
                     RotateByVector.Z = 0.0;
                 }
                 #endregion
+
+                Console.WriteLine("X: {0} | Y: {1} | Z: {2}", RotateByVector.X, RotateByVector.Y, RotateByVector.Z);
             }
             #endregion
         }
