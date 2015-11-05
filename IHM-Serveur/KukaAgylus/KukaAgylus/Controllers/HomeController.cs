@@ -104,7 +104,7 @@ namespace KukaAgylus.Controllers
                 //Deconnexion du robot
                 Logs.Add(new Log("info", "Robot disconnection not implemented"));
                 //MvcApplication.RobotInfos.IsConnected = false;
-                success = false;
+                success = true;
             }
 
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
@@ -124,7 +124,10 @@ namespace KukaAgylus.Controllers
                 Logs.Add(new Log("info", string.Format("Change robot settings: Mode \"{0}\", Velocity \"{1}\" ...", mode, MvcApplication.RobotInfos.Velocity)));
 
                 if (mode == "Learning")
+                {
+                    StopLearningLoop();
                     StartLearningLoop();
+                }
                 else StopLearningLoop();
             }
             else
@@ -159,11 +162,13 @@ namespace KukaAgylus.Controllers
 
             // Demarre le thread.
             MouseThread.Start();
-            Console.WriteLine("main thread: Starting mouse thread...");
+            Logs.Add(new Log("INFO", "Starting mouse thread..."));
+            //Console.WriteLine("main thread: Starting mouse thread...");
 
             // Attend que le thread soit lancé et activé
             while (!MouseThread.IsAlive) ;
-            Console.WriteLine("main thread: Mouse alive");
+            //Console.WriteLine("main thread: Mouse alive");
+            Logs.Add(new Log("INFO", "Thread mouse alive"));
 
             // Boucle tant qu'on utilise la souris 
             _learningLoopRunning = true;
@@ -185,6 +190,7 @@ namespace KukaAgylus.Controllers
 
             // Arret le mouvement
             MyRobot.StopRelativeMovement();
+            Logs.Add(new Log("INFO", "End learning loop"));
         }
 
         private void StopLearningLoop()

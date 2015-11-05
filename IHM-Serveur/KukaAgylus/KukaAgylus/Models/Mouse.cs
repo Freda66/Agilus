@@ -29,7 +29,7 @@ namespace Mouse6d
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
         private bool _isCalibrated = false;
 
-        public CartesianPosition CartPosition;
+        public CartesianPosition CartPosition = new CartesianPosition();
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace Mouse6d
 
             TDx.TDxInput.Vector3D Translation;
             #endregion
-
+            
             #region Loop for the calibration
             while (Mouse6d.IsConnected && !_calibrationEnd)
             {
@@ -95,13 +95,14 @@ namespace Mouse6d
                 }
                 #endregion
 
-                #region break while
-                if (Keyboard.IsKeyDown(NativeKeyboard.KeyCode.Enter))
-                {
-                    _calibrationEnd = true;
-                }
-                #endregion
+                //#region break while
+                //if (Keyboard.IsKeyDown(NativeKeyboard.KeyCode.Enter))
+                //{
+                //    _calibrationEnd = true;
+                //}
+                //#endregion
             }
+            LogsList.Add(new Log("info", "End Calibration mouse"));
             _isCalibrated = true;
             #endregion
         }
