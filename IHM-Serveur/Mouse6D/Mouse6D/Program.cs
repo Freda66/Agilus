@@ -14,7 +14,7 @@ namespace Mouse6D
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello here !");
+            Console.WriteLine("Daemon souris 6D en cours");
 
             device = new TDx.TDxInput.Device();
             var connect = false;
@@ -34,14 +34,16 @@ namespace Mouse6D
                 var translation = device.Sensor.Translation;
                 var rotation = device.Sensor.Rotation;
 
-                Mouse.MouseSoapClient serv = new Mouse.MouseSoapClient();
+                try
+                {
+                    Mouse.MouseSoapClient serv = new Mouse.MouseSoapClient();
                 
+                    Console.WriteLine("Translation : {0}\r\nRotation : {1}",
+                        string.Format("X={0} Y={1} Z={2}", translation.X, translation.Y, translation.Z),
+                        string.Format("X={0} Y={1} Z={2}", rotation.X, rotation.Y, rotation.Z));
 
-                Console.WriteLine("Translation : {0}\r\nRotation : {1}",
-                    string.Format("X={0} Y={1} Z={2}", translation.X, translation.Y, translation.Z),
-                    string.Format("X={0} Y={1} Z={2}", rotation.X, rotation.Y, rotation.Z));
-
-                serv.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z);
+                    serv.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z);
+                } catch(Exception e) {}
 
                 Thread.Sleep(100);
             }
