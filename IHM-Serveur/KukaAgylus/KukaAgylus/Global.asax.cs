@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Mouse6d;
+using NLX.Robot.Kuka.Controller;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,8 +13,12 @@ namespace KukaAgylus
     public class MvcApplication : System.Web.HttpApplication
     {
         public static List<Models.Log> Logs = new List<Models.Log>();
+
+        public static Mouse MyMouse = new Mouse() { LogsList = Logs };
+        public static RobotController MyRobot = new RobotController();
+
         public static Models.RobotInfos RobotInfos = new Models.RobotInfos();
-        public static Models.Mouse6DInfos MouseInfos = new Models.Mouse6DInfos();
+        public static Models.MouseInfos MouseInfos = new Models.MouseInfos();
 
         protected void Application_Start()
         {

@@ -6,7 +6,7 @@ using System.Web;
 
 namespace KukaAgylus.Models
 {
-    public class Mouse6DInfos
+    public class MouseInfos
     {
         public bool IsConnected { get; set; } = false;
         public bool IsCalibrated { get; set; } = false;

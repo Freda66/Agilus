@@ -49,6 +49,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NLX.Maurel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NLX.Maurel.exe</HintPath>
+    </Reference>
+    <Reference Include="nlx.robot.kuka.controller, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\nlx.robot.kuka.controller.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -102,6 +110,11 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="TDx.TDxInput, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3bbf7d14b78dc9f5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>lib\TDx.TDxInput.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -109,6 +122,10 @@
     <Reference Include="Antlr3.Runtime">
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Wop_Contracts, Version=2.2.0.25552, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Wop_Contracts.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -125,8 +142,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Log.cs" />
-    <Compile Include="Models\Mouse6D.cs" />
-    <Compile Include="Models\Robot.cs" />
+    <Compile Include="Models\Mouse.cs" />
+    <Compile Include="Models\MouseInfos.cs" />
+    <Compile Include="Models\NativeKeyboard.cs" />
+    <Compile Include="Models\RobotInfos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +155,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="lib\NLX.Maurel.exe" />
+    <Content Include="lib\nlx.robot.kuka.controller.dll" />
+    <Content Include="lib\Stateless.xml" />
+    <Content Include="lib\TDx.TDxInput.dll" />
+    <Content Include="lib\Wop_Contracts.dll" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
