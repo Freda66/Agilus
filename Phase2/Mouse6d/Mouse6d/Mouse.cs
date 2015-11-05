@@ -18,6 +18,7 @@ namespace Mouse6d
         public double MaxTransY = 1.0;
         public double MaxTransZ = 1.0;
 
+        public double Treshold = 0.1; // Filled by a textField
         public double Vitesse = 100.0;
         
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
@@ -128,15 +129,26 @@ namespace Mouse6d
                 #endregion
 
                 #region Movement vector send to the robot
-                MoveByVector.X = VectorNorm.X * Vitesse;
-                MoveByVector.Y = VectorNorm.Y * Vitesse;
-                MoveByVector.Z = VectorNorm.Z * Vitesse;
-                #endregion
-
-                #region Rotation vector send to the robot
-                RotateByVector.X = Rotation.X;
-                RotateByVector.Y = Rotation.Y;
-                RotateByVector.Z = Rotation.Z;
+                // Translation alone
+                if (VectorNorm.X > Treshold || VectorNorm.Y > Treshold || VectorNorm.Z > Treshold)
+                {
+                    MoveByVector.X = VectorNorm.X * Vitesse;
+                    MoveByVector.Y = VectorNorm.Y * Vitesse;
+                    MoveByVector.Z = VectorNorm.Z * Vitesse;
+                    RotateByVector.X = 0.0;
+                    RotateByVector.Y = 0.0;
+                    RotateByVector.Z = 0.0;
+                }
+                // Rotation alone
+                else if (Rotation.X > Treshold || Rotation.Y > Treshold || Rotation.Z > Treshold)
+                {
+                    MoveByVector.X = 0.0;
+                    MoveByVector.Y = 0.0;
+                    MoveByVector.Z = 0.0;
+                    RotateByVector.X = Rotation.X;
+                    RotateByVector.Y = Rotation.Y;
+                    RotateByVector.Z = Rotation.Z;
+                }
                 #endregion
             }
             #endregion

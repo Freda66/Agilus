@@ -24,15 +24,16 @@ namespace Mouse
         //CONSTANTES POUR POSITIONS PLATEAU
         public const int NBLIGNESPLATEAU = 4;
         public const int NBCOLONNESPLATEAU = 4;
-        public const double XD = 935.37;  //Xb
+        public const double XD = 935.37;  //Xb -> derniere position
         public const double YD = -267.96; //Yb
-        public const double XB = 677.17;  //Xd
+        public const double XB = 677.17;  //Xd -> origine
         public const double YB = -283.23; //Yd
         public const double XA = 771.61;  //Xc
         public const double YA = -394.41; //Yc
         public const double XC = 840.33;
         public const double YC = -150.12;
-        public const double THETA = Math.PI * 37.674 / 180.0; //Math.Acos((XMID - XORIGINE) / Math.Sqrt(Math.Pow(XMID - XORIGINE, 2) + Math.Pow(YMID - YORIGINE, 2)));
+        public double THETA = Math.Acos((XC - XB) / Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2)));
+        //public double THETARAD = Math.PI * THETA / 180.0; 
         public  double PASX = Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2))/NBCOLONNESPLATEAU-1;
         public double PASY = Math.Sqrt(Math.Pow(XA - XB, 2) + Math.Pow(YA - YB, 2)) / NBLIGNESPLATEAU - 1;
 
@@ -205,7 +206,8 @@ namespace Mouse
             pts8.C = -90.54730; 
             liste_aller_magasin_to_plateau.Add(pts8);*/
 
-
+            Console.WriteLine("THETA : " + THETA);
+            
 
             for (int i = 0; i < NBLIGNESPLATEAU; i++)
             {
@@ -216,7 +218,8 @@ namespace Mouse
                     double posy = YB - i * PASY * Math.Cos(THETA) + j * PASX * Math.Sin(THETA);
 
 
-                    
+                    ptsPlateau = new NLX.Robot.Kuka.Controller.CartesianPosition();
+
                     ptsPlateau.X = posx;
                     ptsPlateau.Y = posy;
                     ptsPlateau.Z = 391.337982;
@@ -225,15 +228,20 @@ namespace Mouse
                     ptsPlateau.C = -90.54730;
                     bool busy = false;
 
-                    Emplacement temp;
+                    Emplacement temp = new Emplacement();
                     temp.point = ptsPlateau;
                     temp.isBusy = busy;
 
                     plateau.Add(temp);
 
                     Console.WriteLine("Emplacement(" + i + "," + j + ") => X: " + posx + "  Y: " + posy);
-                }
+                    }
             }
+
+            /*foreach (Emplacement emp in plateau)
+            {
+                Console.WriteLine("Plateau =>   X: " + emp.point.X + " Y: " + emp.point.Y + " Z: " + emp.point.Z + " A: " + emp.point.A + " B: " + emp.point.B + " C: " + emp.point.C);
+            }*/
 
         }
 
@@ -264,7 +272,7 @@ namespace Mouse
                     Console.WriteLine("Connection failed ! => " + exc.Message);
                 }
 
-                Console.WriteLine("Mouse connected");
+                //Console.WriteLine("Mouse connected");
                 /* while (true)
                  {
                      var translation = device.Sensor.Translation;
@@ -394,6 +402,8 @@ namespace Mouse
         
         private void buttonPlacerPiece_Click(object sender, EventArgs e)
         {
+            liste_placer_piece.Clear();
+            Console.WriteLine("count:"+liste_placer_piece.Count);
             for (int i = 0; i < plateau.Count; i++)
             {
                 if (!plateau.ElementAt(i).isBusy)
@@ -408,7 +418,7 @@ namespace Mouse
                     // Ajoute la position de l'emplacement à la liste
                     liste_placer_piece.Add(plateau.ElementAt(i).point);
 
-                    Console.WriteLine("Point detected : " + i + " => " + "X: " + empl.point.X + "Y: " + empl.point.Y + "Z: " + empl.point.Z + "A: " + empl.point.A + "B: " + empl.point.B + "C: " + empl.point.C);
+                    Console.WriteLine("Point detected : " + i + " => " + " X: " + empl.point.X + " Y: " + empl.point.Y + " Z: " + empl.point.Z + " A: " + empl.point.A + " B: " + empl.point.B + " C: " + empl.point.C);
 
                     Emplacement empl2 = new Emplacement();
                     empl2.isBusy = true;
@@ -439,6 +449,8 @@ namespace Mouse
                     liste_retour_magasin.Add(empl3.point);
                     // On se dégage de la pièce
                     robot.PlayTrajectory(liste_retour_magasin);
+                    
+
                     // On peux arreter une fois qu'on a mis la pièce
                     break;
                 }
