@@ -31,7 +31,7 @@ namespace KukaAgylus.Webservices
 
             mouseInfos.Angle = angle;
 
-            MvcApplication.Logs.Add(new Models.Log("daemon", string.Format("Receive mouse vector : X={0}, Y={1}, Z={2}, Rx={3}, Ry={4}, Rz={5}, Angle{6}", tx, ty, tz, rx, ry, rz, angle)));
+            MvcApplication.Logs.AddLog("daemon", string.Format("Receive mouse vector : X={0}, Y={1}, Z={2}, Rx={3}, Ry={4}, Rz={5}, Angle={6}", tx, ty, tz, rx, ry, rz, angle));
         }
 
     }

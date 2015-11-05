@@ -18,7 +18,7 @@
                 response.forEach(function (log) {
                     $('.console').append(log + '<br/>');
                 });
-                timer_log = setTimeout("UpdateLogs()", 2000);
+                timer_log = setTimeout("UpdateLogs()", 1000);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 clearTimeout(timer_log);

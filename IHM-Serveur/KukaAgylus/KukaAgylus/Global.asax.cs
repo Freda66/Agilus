@@ -7,18 +7,19 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using KukaAgylus.Models;
 
 namespace KukaAgylus
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static List<Models.Log> Logs = new List<Models.Log>();
+        public static LogManager Logs = new LogManager();
+        
+        public static MouseInfos MouseInfos = new MouseInfos();
+        public static Mouse MyMouse = new Mouse() { Logs = Logs, MouseInfos = MouseInfos };
 
-        public static Mouse MyMouse = new Mouse() { LogsList = Logs };
         public static RobotController MyRobot = new RobotController();
-
-        public static Models.RobotInfos RobotInfos = new Models.RobotInfos();
-        public static Models.MouseInfos MouseInfos = new Models.MouseInfos();
+        public static RobotInfos RobotInfos = new RobotInfos();
 
         protected void Application_Start()
         {
@@ -30,7 +31,7 @@ namespace KukaAgylus
 
         protected void Session_Start(object sender, EventArgs e)
         {
-            Logs.Add(new Models.Log("info", "New user connected"));
+            Logs.AddLog("info", "New user connected");
         }
 
     }

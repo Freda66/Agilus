@@ -24,7 +24,7 @@
             success: function (response, textStatus, jqXHR) {
                 $('#rob-infos').empty();
                 $('#rob-infos').append(response);
-                timerRobotInfo = setTimeout("UpdateRobInfos()", 2000);
+                timerRobotInfo = setTimeout("UpdateRobInfos()", 1000);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 clearTimeout(timerRobotInfo);
@@ -39,7 +39,7 @@
             success: function (response, textStatus, jqXHR) {
                 $('#mouse-infos').empty();
                 $('#mouse-infos').append(response);
-                timerMouseInfo = setTimeout("UpdateMouseInfos()", 2000);
+                timerMouseInfo = setTimeout("UpdateMouseInfos()", 1000);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 clearTimeout(timerMouseInfo);

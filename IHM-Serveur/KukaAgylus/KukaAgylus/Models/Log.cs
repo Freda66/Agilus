@@ -27,5 +27,41 @@ namespace KukaAgylus.Models
 
     }
 
+    public class LogManager
+    {
+        private const int MAX_LOG_COUNT = 5000;
+        private List<Log> logs = new List<Log>();
+
+        public void AddLog(Log log)
+        {
+            if (logs.Count > MAX_LOG_COUNT) logs.RemoveAt(0);
+            logs.Add(log);
+        } 
+
+        public void AddLog(string type, string message)
+        {
+            AddLog(new Log(type, message));
+        }
+
+        public List<string> GetDisplayableLogs(bool orderDescending = true)
+        {
+            var logsToString = new List<string>();
+
+            if (orderDescending)
+            {
+                foreach (var log in logs.OrderByDescending(m => m.Time))
+                    logsToString.Add(log.ToString());
+            }
+            else
+            {
+                foreach (var log in logs)
+                    logsToString.Add(log.ToString());
+            }
+
+            return logsToString;
+        }
+
+    }
+
 
 }

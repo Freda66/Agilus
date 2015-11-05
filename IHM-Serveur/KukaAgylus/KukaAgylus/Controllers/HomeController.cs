@@ -12,11 +12,11 @@ namespace KukaAgylus.Controllers
 {
     public class HomeController : Controller
     {
-        private List<Log> Logs = MvcApplication.Logs;
+        private LogManager Logs = MvcApplication.Logs;
 
-        private MouseInfos mouseInfos = MvcApplication.MouseInfos;
-
+        private MouseInfos MouseInfos = MvcApplication.MouseInfos;
         private Mouse MyMouse = MvcApplication.MyMouse;
+
         private RobotController MyRobot = MvcApplication.MyRobot;
 
         private bool _learningLoopRunning = false;
@@ -48,16 +48,13 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult GetLogs()
         {
-            var logsToString = new List<string>();
-            foreach (var log in Logs.OrderByDescending(m => m.Time))
-                logsToString.Add(log.ToString());
-            return Json(logsToString, JsonRequestBehavior.AllowGet);
+            return Json(Logs.GetDisplayableLogs() , JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public ActionResult GetMouseInfos()
         {
-            return Json(mouseInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
+            return Json(MouseInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
             //return Json(MyMouse.GetMouseInfos().GetHtmlString(), JsonRequestBehavior.AllowGet);
         }
 
@@ -73,14 +70,14 @@ namespace KukaAgylus.Controllers
             if (start)
             {
                 //Démarrage de la calibration
-                Logs.Add(new Log("info", "Starting mouse calibration ..."));
+                Logs.AddLog("info", "Starting mouse calibration ...");
                 Thread calibThread = new Thread(MyMouse.Calibrate);
                 calibThread.Start();
             }
             else
             {
                 //Arrêt de la calibration
-                Logs.Add(new Log("info", "Stop mouse calibration"));
+                Logs.AddLog("info", "Stop mouse calibration");
                 MyMouse.CalibrationStop();
             }
 
@@ -94,25 +91,25 @@ namespace KukaAgylus.Controllers
             if (connect)
             {
                 //Connexion du robot
-                Logs.Add(new Log("info", string.Format("Starting robot connection on {0} ...", ip)));
+                Logs.AddLog("info", string.Format("Starting robot connection on {0} ...", ip));
                 MvcApplication.RobotInfos.IsConnected = true;
                 try
                 {
                     MyRobot.Connect(ip);
                     MvcApplication.RobotInfos.IsConnected = true;
                     success = true;
-                    Logs.Add(new Log("info", "Robot connected"));
+                    Logs.AddLog("info", "Robot connected");
                 }
                 catch (Exception e)
                 {
-                    Logs.Add(new Log("Error", string.Format("Error in robot connection: {0} ...", e.Data)));
+                    Logs.AddLog("Error", string.Format("Error in robot connection: {0} ...", e.Data));
                     MvcApplication.RobotInfos.IsConnected = false;
                 }
             }
             else
             {
                 //Deconnexion du robot
-                Logs.Add(new Log("info", "Robot disconnection not implemented"));
+                Logs.AddLog("info", "Robot disconnection not implemented");
                 //MvcApplication.RobotInfos.IsConnected = false;
                 success = true;
             }
@@ -131,7 +128,7 @@ namespace KukaAgylus.Controllers
             if (success)
             {
                 MvcApplication.RobotInfos.Mode = mode;
-                Logs.Add(new Log("info", string.Format("Change robot settings: Mode \"{0}\", Velocity \"{1}\" ...", mode, MvcApplication.RobotInfos.Velocity)));
+                Logs.AddLog("info", string.Format("Change robot settings: Mode \"{0}\", Velocity \"{1}\" ...", mode, MvcApplication.RobotInfos.Velocity));
 
                 if (mode == "Learning")
                 {
@@ -142,7 +139,7 @@ namespace KukaAgylus.Controllers
             }
             else
             {
-                Logs.Add(new Log("error", "Invalid operation while settings change"));
+                Logs.AddLog("error", "Invalid operation while settings change");
             }
 
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
@@ -172,13 +169,13 @@ namespace KukaAgylus.Controllers
 
             // Demarre le thread.
             MouseThread.Start();
-            Logs.Add(new Log("INFO", "Starting mouse thread..."));
+            Logs.AddLog("INFO", "Starting mouse thread...");
             //Console.WriteLine("main thread: Starting mouse thread...");
 
             // Attend que le thread soit lancé et activé
             while (!MouseThread.IsAlive) ;
             //Console.WriteLine("main thread: Mouse alive");
-            Logs.Add(new Log("INFO", "Thread mouse alive"));
+            Logs.AddLog("INFO", "Thread mouse alive");
 
             // Boucle tant qu'on utilise la souris 
             _learningLoopRunning = true;
@@ -199,7 +196,7 @@ namespace KukaAgylus.Controllers
 
             // Arret le mouvement
             MyRobot.StopRelativeMovement();
-            Logs.Add(new Log("INFO", "End learning loop"));
+            Logs.AddLog("INFO", "End learning loop");
         }
 
         private void StopLearningLoop()
@@ -210,13 +207,13 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz)
         {
-            mouseInfos.TranslationX = tx;
-            mouseInfos.TranslationY = ty;
-            mouseInfos.TranslationZ = tz;
+            MouseInfos.TranslationX = tx;
+            MouseInfos.TranslationY = ty;
+            MouseInfos.TranslationZ = tz;
 
-            mouseInfos.RotationX = rx;
-            mouseInfos.RotationY = ry;
-            mouseInfos.RotationZ = rz;
+            MouseInfos.RotationX = rx;
+            MouseInfos.RotationY = ry;
+            MouseInfos.RotationZ = rz;
         }
 
     }

@@ -11,7 +11,7 @@ namespace Mouse6d
 {
     public class Mouse
     {
-        public List<Log> LogsList { get; set; }
+        public LogManager Logs { get; set; }
         public MouseInfos MouseInfos { get; set; }
 
         #region Attributs
@@ -30,7 +30,6 @@ namespace Mouse6d
 
         public CartesianPosition CartPosition = new CartesianPosition();
         #endregion
-
 
         #region Constructeur
         /// <summary>
@@ -56,15 +55,14 @@ namespace Mouse6d
             #region Loop for the calibration
             while (!_calibrationEnd)
             {
-                Thread.Sleep(100);
                 Translation = GetTranslationVector();
-                LogsList.Add(new Log("info", string.Format("MOUSE :  X : {0} | Y : {1} | Z : {2}", Translation.X, Translation.Y, Translation.Z)));
+                Logs.AddLog("info", string.Format("MOUSE :  X : {0} | Y : {1} | Z : {2}", Translation.X, Translation.Y, Translation.Z));
             
                 #region Get max X for calibration
                 if (Translation.X > MaxTransX)
                 {
                     MaxTransX = Translation.X;
-                    LogsList.Add(new Log("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ)));
+                    Logs.AddLog("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ));
                 }
                 #endregion
 
@@ -72,7 +70,7 @@ namespace Mouse6d
                 if (Translation.Y > MaxTransY)
                 {
                     MaxTransY = Translation.Y;
-                    LogsList.Add(new Log("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ)));
+                    Logs.AddLog("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ));
                 }
                 #endregion
 
@@ -80,11 +78,11 @@ namespace Mouse6d
                 if (Translation.Z > MaxTransZ)
                 {
                     MaxTransZ = Translation.Z;
-                    LogsList.Add(new Log("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ)));
+                    Logs.AddLog("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ));
                 }
                 #endregion
             }
-            LogsList.Add(new Log("info", "End Calibration mouse"));
+            Logs.AddLog("info", "End Calibration mouse");
             MouseInfos.IsCalibrated = true;
             #endregion
         }
@@ -118,7 +116,7 @@ namespace Mouse6d
                 if (VectorNorm.X > 1.0 || VectorNorm.Y > 1.0 || VectorNorm.Z > 1.0)
                 {
                     //Console.WriteLine("Error, vector > 1");
-                    LogsList.Add(new Log("Error", "Error in mouse loop(): vector > 1"));
+                    Logs.AddLog("Error", "Error in mouse loop(): vector > 1");
                     _shouldStop = true;
                 }
                 #endregion
@@ -171,7 +169,6 @@ namespace Mouse6d
         {
             _shouldStop = true;
         }
-        #endregion
         
         public Vector3D GetTranslationVector()
         {
@@ -190,5 +187,7 @@ namespace Mouse6d
             rotation.Z = MouseInfos.RotationZ;
             return rotation;
         }
+        #endregion
+
     }
 }
