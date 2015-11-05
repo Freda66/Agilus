@@ -3,24 +3,111 @@
     <p class="tips">Description here</p>
     <div class="input-group">
         <span class="input-group-addon" id="ipadress-addon">Process</span>
-        <input type="text" id="input-selected-mode" class="form-control" placeholder="No Process selected">
+        <input type="text" id="input-selected-process" class="form-control" placeholder="No Process selected">
         <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Load
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-right" id="learning-process-list">
-            </ul>
+            <ul class="dropdown-menu dropdown-menu-right" id="learning-process-list"></ul>
         </div>
     </div>
+    <p>
+        <ul class="list-group" id="learning-process-infos"></ul>
+    </p>
 </div>
 
 <script>
-    function LoadProcess(processName){
-        console.log("Launch process: " + processName);
+    //DRAG AND DROG IMPLEMENTATION
+    var rows;
+    var dragSrcEl = null;
+
+    function handleDragStart(e) {
+        this.style.opacity = '0.4';
+        dragSrcEl = this;
+
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+        e.dataTransfer.setData('id', this.id);
     }
 
-    function DisplayProcessList(){
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        this.classList.add('over');
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation(); // stops the browser from redirecting.
+        }
+        if (dragSrcEl != this) {
+            // Set the source column's HTML to the HTML of the column we dropped on.
+            dragSrcEl.innerHTML = this.innerHTML;
+            dragSrcEl.id = this.id;
+            this.innerHTML = e.dataTransfer.getData('text/html');
+            this.id = e.dataTransfer.getData('id');
+        }
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        [].forEach.call(rows, function (row) {
+            row.classList.remove('over');
+            row.style.opacity = '1.0';
+        });
+    }
+    
+    function initDnD() {
+        rows = document.querySelectorAll('.drag-item');
+        [].forEach.call(rows, function (row) {
+            row.addEventListener('dragstart', handleDragStart, false);
+            row.addEventListener('dragenter', handleDragEnter, false);
+            row.addEventListener('dragover', handleDragOver, false);
+            row.addEventListener('dragleave', handleDragLeave, false);
+            row.addEventListener('drop', handleDrop, false);
+            row.addEventListener('dragend', handleDragEnd, false);
+        });
+    }
+
+
+    //END DRAG AND DROP
+
+    function DeleteProcessElement(elementId) {
+        $('#' + elementId).remove();
+    }
+
+    function LoadProcess(processName) {
+        $('#input-selected-process').val(processName);
+        $.ajax({
+            url: "/Home/GetProcessInfos",
+            type: "get",
+            data: {processName: processName},
+            success: function (response, textStatus, jqXHR) {
+                $('#learning-process-infos').empty();
+                for (var i in response) {
+                    var entry = "<li class='list-group-item drag-item'  draggable='true' id='proc-item-" + response[i].replace(' ', '') + "'>" + response[i] + "<span class='badge'><a href='javascript:DeleteProcessElement(\"proc-item-" + response[i].replace(' ', '') + "\")'>X</a></span></li>";
+                    $('#learning-process-infos').append(entry);
+                }
+                initDnD();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+
+    }
+
+    function DisplayProcessList() {
         $.ajax({
             url: "/Home/GetProcessList",
             type: "get",

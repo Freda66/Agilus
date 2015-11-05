@@ -21,6 +21,7 @@ namespace KukaAgylus.Controllers
 
         private bool _learningLoopRunning = false;
 
+        #region Rooted views
         public ActionResult Index()
         {
             return View();
@@ -49,7 +50,9 @@ namespace KukaAgylus.Controllers
         {
             return View();
         }
+        #endregion
 
+        #region Request for Ajax purpose
         [HttpGet]
         public ActionResult GetLogs()
         {
@@ -121,6 +124,7 @@ namespace KukaAgylus.Controllers
 
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpGet]
         public ActionResult ApplyRobotSettings(string mode, double? velocity)
         {
@@ -157,7 +161,18 @@ namespace KukaAgylus.Controllers
 
             return Json(fakeList, JsonRequestBehavior.AllowGet);
         }
+        
+        [HttpGet]
+        public ActionResult GetProcessInfos(string processName)
+        {
+            var fakeProcessInfo = new List<string>() { "Mouvement1", "Open Gripper", "Movement2", "Close Gripper" };
 
+            return Json(fakeProcessInfo, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Functions
         private void StartLearningLoop()
         {
             Thread learningLoop = new Thread(LearningLoop);
@@ -208,18 +223,7 @@ namespace KukaAgylus.Controllers
         {
             _learningLoopRunning = false;
         }
-
-        [HttpGet]
-        public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz)
-        {
-            MouseInfos.TranslationX = tx;
-            MouseInfos.TranslationY = ty;
-            MouseInfos.TranslationZ = tz;
-
-            MouseInfos.RotationX = rx;
-            MouseInfos.RotationY = ry;
-            MouseInfos.RotationZ = rz;
-        }
+        #endregion
 
     }
 }
