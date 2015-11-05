@@ -26,12 +26,12 @@ namespace Mouse
         public const int NBCOLONNESPLATEAU = 4;
         public const double XD = 935.37;  //Xb -> derniere position
         public const double YD = -267.96; //Yb
-        public const double XB = 677.17;  //Xd -> origine
-        public const double YB = -283.23; //Yd
-        public const double XA = 771.61;  //Xc
-        public const double YA = -394.41; //Yc
-        public const double XC = 840.33;
-        public const double YC = -150.12;
+        public const double XB = 676.32;  //Xd -> origine
+        public const double YB = -281.79; //Yd
+        public const double XA = 777.05;  //Xc
+        public const double YA = -396.82; //Yc
+        public const double XC = 840.74;
+        public const double YC = -148.34;
         public double THETA = Math.Acos((XC - XB) / Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2)));
         //public double THETARAD = Math.PI * THETA / 180.0; 
         public  double PASX = Math.Sqrt(Math.Pow(XC - XB, 2) + Math.Pow(YC - YB, 2))/NBCOLONNESPLATEAU-1;
@@ -43,14 +43,24 @@ namespace Mouse
         public NLX.Robot.Kuka.Controller.RobotController robot;
         public NLX.Robot.Kuka.Controller.CartesianPosition point_relatif;
 
-        public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_points;
+        public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_temp;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_aller_magasin;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_aller_magasin_to_plateau;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_placer_piece;
         public List<NLX.Robot.Kuka.Controller.CartesianPosition> liste_retour_magasin;
        
         public NLX.Robot.Kuka.Controller.CartesianPosition ptsPlateau = new NLX.Robot.Kuka.Controller.CartesianPosition();
+        public List<object> liste_commandes = new List<object>();
 
+        public struct Pince
+        {
+            public bool isOpen;
+        }
+
+
+        
+             
+        
 
         public struct Emplacement
         {
@@ -62,58 +72,37 @@ namespace Mouse
 
         public NLX.Robot.Kuka.Controller.CartesianPosition pts;
 
-         /*static void ShowConfig()
-         {
-
-            // For read access you do not need to call OpenExeConfiguraton
-            foreach(string key in ConfigurationManager.AppSettings)
-            {
-               string value = ConfigurationManager.AppSettings[key];
-               Console.WriteLine("Key: {0}, Value: {1}", key, value);
-            }
-         }*/
         public Form1()
         {
             InitializeComponent();
 
-            /*ShowConfig();
+            liste_temp = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
+            NLX.Robot.Kuka.Controller.CartesianPosition test = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
-            // Open App.Config of executable
-            System.Configuration.Configuration config =
-             ConfigurationManager.OpenExeConfiguration
-                        (ConfigurationUserLevel.None);
+            // Au dessus origine plateau
+            test.X = 677.17;
+            test.Y = -283.23;
+            test.Z = 391.337982;
+            test.A = -107.49276;
+            test.B = 2.03317857;
+            test.C = -90.54730;
+            liste_temp.Add(test);
 
-            // Add an Application Setting.
-            config.AppSettings.Settings.Add("ModificationDate",
-                           DateTime.Now.ToLongTimeString() + " ");
+           
+            Console.WriteLine("pts 7");
 
-            // Save the changes in App.config file.
-            config.Save(ConfigurationSaveMode.Modified);
-
-            // Force a reload of a changed section.
-            ConfigurationManager.RefreshSection("appSettings");
-            ShowConfig();*/
+            /**/
 
             vecteur = new TDx.TDxInput.Vector3D();
             point_relatif = new NLX.Robot.Kuka.Controller.CartesianPosition();
-            liste_points = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
+            //liste_points = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             liste_aller_magasin = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             liste_aller_magasin_to_plateau = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             liste_placer_piece = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             liste_retour_magasin = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
             plateau = new List<Emplacement>();
 
-            /*NLX.Robot.Kuka.Controller.CartesianPosition pts = new NLX.Robot.Kuka.Controller.CartesianPosition();
-            // Devant magasin
-            pts.X = 501.760773;
-            pts.Y = -168.319458;
-            pts.Z = 290.646942;
-            pts.A = -77.6867905;
-            pts.B = -5.84098625;
-            pts.C = -175.76;
-
-            liste_aller_magasin.Add(pts);*/
-
+            
             NLX.Robot.Kuka.Controller.CartesianPosition pts2 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
             // Saisie de la pièce
@@ -186,14 +175,14 @@ namespace Mouse
             NLX.Robot.Kuka.Controller.CartesianPosition pts7 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
             // Au dessus origine plateau
-            pts7.X = 677.17;
+            /*pts7.X = 677.17;
             pts7.Y = -283.23;
             pts7.Z = 391.337982;
             pts7.A = -107.49276;
             pts7.B = 2.03317857;
             pts7.C = -90.54730;
             liste_aller_magasin_to_plateau.Add(pts7);
-            Console.WriteLine("pts 7");
+            Console.WriteLine("pts 7");*/
 
             /*NLX.Robot.Kuka.Controller.CartesianPosition pts8 = new NLX.Robot.Kuka.Controller.CartesianPosition();
             
@@ -300,14 +289,10 @@ namespace Mouse
         {
             NLX.Robot.Kuka.Controller.CartesianPosition point = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
-            point.X = robot.GetCurrentPosition().X;
-            point.Y = robot.GetCurrentPosition().Y;
-            point.Z = robot.GetCurrentPosition().Z;
-            point.A = robot.GetCurrentPosition().A;
-            point.B = robot.GetCurrentPosition().B;
-            point.C = robot.GetCurrentPosition().C;
+            point= robot.GetCurrentPosition();
 
-            liste_points.Add(point);
+
+            liste_temp.Add(point);
             listBoxSavePosition.Items.Add("X" + robot.GetCurrentPosition().X.ToString() + " Y:" + robot.GetCurrentPosition().Y.ToString() + " Z:" + robot.GetCurrentPosition().Z.ToString());
         }
 
@@ -320,14 +305,29 @@ namespace Mouse
 
         private void buttonOpenGripper_Click(object sender, EventArgs e)
         {
+
+            liste_commandes.Add(liste_temp);
+            liste_temp = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
+
+            listBoxSavePosition.Items.Add("Ouverture pince");
+            Pince maPince = new Pince();
+            maPince.isOpen = true;
+            liste_commandes.Add(maPince);
             Console.WriteLine("Open Gripper");
-            robot.OpenGripper();
+            //robot.OpenGripper();
         }
 
         private void buttonCloseGripper_Click(object sender, EventArgs e)
         {
+            liste_commandes.Add(liste_temp);
+            liste_temp = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
+
+            listBoxSavePosition.Items.Add("Fermeture pince");
+            Pince maPince = new Pince();
+            maPince.isOpen = false;
+            liste_commandes.Add(maPince);
             Console.WriteLine("Close Gripper");
-            robot.CloseGripper();
+            //robot.CloseGripper();
 
 
         }
@@ -374,7 +374,32 @@ namespace Mouse
         private void buttonTrajectory_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Lancement trajectoire");
-            robot.PlayTrajectory(liste_points);
+
+            foreach(object action in liste_commandes)
+            {
+                Console.WriteLine("type:"+action.GetType());
+
+                if (action.GetType().ToString().Contains("CartesianPosition"))
+                {
+                    List<NLX.Robot.Kuka.Controller.CartesianPosition> trajectory = new List<NLX.Robot.Kuka.Controller.CartesianPosition>();
+                    trajectory = (List<NLX.Robot.Kuka.Controller.CartesianPosition>)action;
+
+                    robot.PlayTrajectory(trajectory);
+                }
+                else if (action.GetType().ToString().Contains("Pince"))
+                {
+                    if (((Pince)action).isOpen)
+                    {
+                        robot.OpenGripper();
+                    }
+                    else
+                    {
+                        robot.CloseGripper();
+                    }
+                }
+                //robot.PlayTrajectory(liste_points);
+            }
+            
         }
 
 
@@ -389,22 +414,17 @@ namespace Mouse
         private void buttonAllerPlateau_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Aller origine plateau");
-            robot.PlayTrajectory(liste_aller_magasin_to_plateau);
-
+ //           robot.PlayTrajectory(liste_aller_magasin_to_plateau);
+            foreach (NLX.Robot.Kuka.Controller.CartesianPosition pos in liste_aller_magasin_to_plateau)
+            {
+                Console.WriteLine("Contenu liste retour magasin =>   X: " + pos.X + " Y: " + pos.Y + " Z: " + pos.Z + " A: " + pos.A + " B: " + pos.B + " C: " + pos.C);
+            }
 
             //PlacerPiece();
 
-
-
-
-        }
-
-        
-        private void buttonPlacerPiece_Click(object sender, EventArgs e)
-        {
-            liste_placer_piece.Clear();
-            Console.WriteLine("count:"+liste_placer_piece.Count);
-            for (int i = 0; i < plateau.Count; i++)
+            
+            Console.WriteLine("count:" + liste_placer_piece.Count);
+            for (int i = plateau.Count-1; i >= 0; i--)
             {
                 if (!plateau.ElementAt(i).isBusy)
                 {
@@ -427,13 +447,18 @@ namespace Mouse
 
                     // On descend la pièce
                     empl2.point.Z -= 250;
+                    Console.WriteLine("depose piece => X: " + empl2.point.X + " Y: " + empl2.point.Y + " Z: " + empl2.point.Z + " A: " + empl2.point.A + " B: " + empl2.point.B + " C: " + empl2.point.C);
                     // Ajout de la position à la liste
                     liste_placer_piece.Add(empl2.point);
                     // On effectue la trajectoire
-                    robot.PlayTrajectory(liste_placer_piece);
+   //                 robot.PlayTrajectory(liste_placer_piece);
                     // On relache la pièce
-                    robot.OpenGripper();
+     //               robot.OpenGripper();
 
+                    foreach (NLX.Robot.Kuka.Controller.CartesianPosition pos in liste_placer_piece)
+                    {
+                        Console.WriteLine("Contenu liste retour magasin =>   X: " + pos.X + " Y: " + pos.Y + " Z: " + pos.Z + " A: " + pos.A + " B: " + pos.B + " C: " + pos.C);
+                    }
 
                     Emplacement empl3 = new Emplacement();
                     empl3.isBusy = true;
@@ -441,20 +466,37 @@ namespace Mouse
 
 
                     // On remonte 
-                    empl3.point.Z += 250;
-
-                    //Console.WriteLine("X:" + empl3.point.X + "Y:" + empl3.point.Y + "Z:" + empl3.point.Z + "A:" + empl3.point.A + "B:" + empl3.point.B + "C:" + empl3.point.C);
+                    empl3.point.Z += 200;
+                    Console.WriteLine("Retrait piece => X: " + empl3.point.X + " Y: " + empl3.point.Y + " Z: " + empl3.point.Z + " A: " + empl3.point.A + " B: " + empl3.point.B + " C: " + empl3.point.C);
 
                     // On ajout à la liste
                     liste_retour_magasin.Add(empl3.point);
                     // On se dégage de la pièce
-                    robot.PlayTrajectory(liste_retour_magasin);
-                    
+       //             robot.PlayTrajectory(liste_retour_magasin);
 
+                    foreach (NLX.Robot.Kuka.Controller.CartesianPosition pos in liste_retour_magasin)
+                    {
+                        Console.WriteLine("Contenu liste retour magasin =>   X: " + pos.X + " Y: " + pos.Y + " Z: " + pos.Z + " A: " + pos.A + " B: " + pos.B + " C: " + pos.C);
+                    }
+
+                    liste_placer_piece.Clear();
                     // On peux arreter une fois qu'on a mis la pièce
                     break;
                 }
             }   
+
+
+        }
+
+        
+        private void buttonPlacerPiece_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("Prout Modafuka !");
+        }
+
+        private void listBoxSavePosition_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
