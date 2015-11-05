@@ -46,6 +46,22 @@
 </div>
 
 <script>
+    function BtnApplyClick() {
+        $.ajax({
+            url: "/Home/ApplyRobotSettings",
+            type: "get",
+            data: { mode: $('#input-selected-mode').val(), velocity: $('#input-velocity').val() },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateRobotInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
     function SetRobotMode(selectedMode) {
         $('#input-selected-mode').val(selectedMode);
     }

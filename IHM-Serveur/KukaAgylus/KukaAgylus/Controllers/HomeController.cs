@@ -85,5 +85,21 @@ namespace KukaAgylus.Controllers
 
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public ActionResult ApplyRobotSettings(string mode, double? velocity)
+        {
+            bool success = (mode == "Learning" || mode == "Processing") && MvcApplication.RobotInfos.IsConnected;
+            if (success && velocity !=null) MvcApplication.RobotInfos.Velocity = velocity.Value;
+            if (success)
+            {
+                MvcApplication.RobotInfos.Mode = mode;
+                MvcApplication.Logs.Add(new Models.Log("info", string.Format("Change robot settings: Mode \"{0}\", Velocity \"{1}\" ...", mode, MvcApplication.RobotInfos.Velocity)));
+            }else
+            {
+                MvcApplication.Logs.Add(new Models.Log("error", "Invalid operation while settings change"));
+            }
+
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
