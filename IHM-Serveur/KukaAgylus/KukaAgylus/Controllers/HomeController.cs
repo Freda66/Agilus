@@ -13,6 +13,9 @@ namespace KukaAgylus.Controllers
     public class HomeController : Controller
     {
         private List<Log> Logs = MvcApplication.Logs;
+
+        private MouseInfos mouseInfos = MvcApplication.MouseInfos;
+
         private Mouse MyMouse = MvcApplication.MyMouse;
         private RobotController MyRobot = MvcApplication.MyRobot;
 
@@ -37,6 +40,11 @@ namespace KukaAgylus.Controllers
             return View();
         }
 
+        public ActionResult Console()
+        {
+            return View();
+        }
+
         [HttpGet]
         public ActionResult GetLogs()
         {
@@ -49,7 +57,8 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult GetMouseInfos()
         {
-            return Json(MyMouse.GetMouseInfos().GetHtmlString(), JsonRequestBehavior.AllowGet);
+            return Json(mouseInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
+            //return Json(MyMouse.GetMouseInfos().GetHtmlString(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -97,6 +106,7 @@ namespace KukaAgylus.Controllers
                 catch (Exception e)
                 {
                     Logs.Add(new Log("Error", string.Format("Error in robot connection: {0} ...", e.Data)));
+                    MvcApplication.RobotInfos.IsConnected = false;
                 }
             }
             else
@@ -177,7 +187,6 @@ namespace KukaAgylus.Controllers
                 // Met le thread principale (ici) en attente d'une millisecond pour autoriser le thread secondaire à faire quelque chose
                 Thread.Sleep(1);
 
-                //Console.WriteLine("cmd robot: X : {0} | Y : {1} | Z : {2} | A : {3} | B : {4} | C : {5}", CartPositionMouse.X, CartPositionMouse.Y, CartPositionMouse.Z, CartPositionMouse.A, CartPositionMouse.B, CartPositionMouse.C);
                 // Envoi les commandes de deplacement au robot
                 MyRobot.SetRelativeMovement(MyMouse.CartPosition);
             }
@@ -197,5 +206,18 @@ namespace KukaAgylus.Controllers
         {
             _learningLoopRunning = false;
         }
+
+        [HttpGet]
+        public void SendMousePosition(double tx, double ty, double tz, double rx, double ry, double rz)
+        {
+            mouseInfos.TranslationX = tx;
+            mouseInfos.TranslationY = ty;
+            mouseInfos.TranslationZ = tz;
+
+            mouseInfos.RotationX = rx;
+            mouseInfos.RotationY = ry;
+            mouseInfos.RotationZ = rz;
+        }
+
     }
 }

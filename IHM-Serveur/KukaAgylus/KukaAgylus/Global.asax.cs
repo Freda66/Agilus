@@ -32,5 +32,6 @@ namespace KukaAgylus
         {
             Logs.Add(new Models.Log("info", "New user connected"));
         }
+
     }
 }

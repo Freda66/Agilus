@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://localhost/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://localhost/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://localhost/">
+      <s:element name="SendMousePosition">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="tx" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="ty" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="tz" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="rx" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="ry" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="rz" type="s:double" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendMousePositionResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SendMousePositionSoapIn">
+    <wsdl:part name="parameters" element="tns:SendMousePosition" />
+  </wsdl:message>
+  <wsdl:message name="SendMousePositionSoapOut">
+    <wsdl:part name="parameters" element="tns:SendMousePositionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="MouseSoap">
+    <wsdl:operation name="SendMousePosition">
+      <wsdl:input message="tns:SendMousePositionSoapIn" />
+      <wsdl:output message="tns:SendMousePositionSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MouseSoap" type="tns:MouseSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SendMousePosition">
+      <soap:operation soapAction="http://localhost/SendMousePosition" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="MouseSoap12" type="tns:MouseSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SendMousePosition">
+      <soap12:operation soapAction="http://localhost/SendMousePosition" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Mouse">
+    <wsdl:port name="MouseSoap" binding="tns:MouseSoap">
+      <soap:address location="http://localhost:22338/Webservices/Mouse.asmx" />
+    </wsdl:port>
+    <wsdl:port name="MouseSoap12" binding="tns:MouseSoap12">
+      <soap12:address location="http://localhost:22338/Webservices/Mouse.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

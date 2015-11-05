@@ -49,8 +49,8 @@ namespace Mouse6d
             }
             #endregion
 
-            MoveByVector = new TDx.TDxInput.Vector3D() { X = 0.0, Y = 0.0, Z = 0.0 };
-            RotateByVector = new TDx.TDxInput.Vector3D() { X = 0.0, Y = 0.0, Z = 0.0 };
+            MoveByVector = new TDx.TDxInput.Vector3D();
+            RotateByVector = new TDx.TDxInput.Vector3D();
         }
         #endregion
 
@@ -69,7 +69,9 @@ namespace Mouse6d
             #region Loop for the calibration
             while (Mouse6d.IsConnected && !_calibrationEnd)
             {
+                Thread.Sleep(100);
                 Translation = Mouse6d.Sensor.Translation;
+                LogsList.Add(new Log("info", string.Format("MOUSE :  X : {0} | Y : {1} | Z : {2}", Translation.X, Translation.Y, Translation.Z)));
                 NativeKeyboard Keyboard = new NativeKeyboard();
 
                 #region Get max X for calibration
@@ -95,13 +97,6 @@ namespace Mouse6d
                     LogsList.Add(new Log("info", string.Format("X : {0} | Y : {1} | Z : {2}", MaxTransX, MaxTransY, MaxTransZ)));
                 }
                 #endregion
-
-                //#region break while
-                //if (Keyboard.IsKeyDown(NativeKeyboard.KeyCode.Enter))
-                //{
-                //    _calibrationEnd = true;
-                //}
-                //#endregion
             }
             LogsList.Add(new Log("info", "End Calibration mouse"));
             _isCalibrated = true;
