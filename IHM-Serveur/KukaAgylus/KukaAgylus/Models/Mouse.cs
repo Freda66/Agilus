@@ -11,9 +11,9 @@ namespace Mouse6d
     public class Mouse
     {
         public List<Log> LogsList { get; set; }
+        public MouseInfos MouseInfos { get; set; }
 
         #region Attributs
-        public TDx.TDxInput.Device Mouse6d;
 
         public TDx.TDxInput.Vector3D MoveByVector;
         public TDx.TDxInput.Vector3D RotateByVector;
@@ -41,14 +41,6 @@ namespace Mouse6d
         /// </summary>
         public Mouse()
         {
-            #region Mouse connection
-            Mouse6d = new TDx.TDxInput.Device();
-            if (Mouse6d != null)
-            {
-                Mouse6d.Connect();
-            }
-            #endregion
-
             MoveByVector = new TDx.TDxInput.Vector3D();
             RotateByVector = new TDx.TDxInput.Vector3D();
         }
@@ -67,13 +59,12 @@ namespace Mouse6d
             #endregion
             
             #region Loop for the calibration
-            while (Mouse6d.IsConnected && !_calibrationEnd)
+            while (!_calibrationEnd)
             {
                 Thread.Sleep(100);
-                Translation = Mouse6d.Sensor.Translation;
+                Translation = GetTranslationVector();
                 LogsList.Add(new Log("info", string.Format("MOUSE :  X : {0} | Y : {1} | Z : {2}", Translation.X, Translation.Y, Translation.Z)));
-                NativeKeyboard Keyboard = new NativeKeyboard();
-
+            
                 #region Get max X for calibration
                 if (Translation.X > MaxTransX)
                 {
@@ -117,10 +108,10 @@ namespace Mouse6d
             #endregion
 
             #region Loop which get the information from the mouse and convert to the movement of the robot
-            while (Mouse6d.IsConnected || !_shouldStop)
+            while (!_shouldStop)
             {
-                Translation = Mouse6d.Sensor.Translation;
-                Rotation = Mouse6d.Sensor.Rotation;
+                Translation = GetTranslationVector();
+                Rotation = GetRotationAxis();
 
                 #region Normalization of the vector of the mouse
                 VectorNorm.X = Translation.X / Norm;
@@ -186,20 +177,23 @@ namespace Mouse6d
             _shouldStop = true;
         }
         #endregion
-        public MouseInfos GetMouseInfos()
+        
+        public TDx.TDxInput.Vector3D GetTranslationVector()
         {
-            return new MouseInfos()
-            {
-                TranslationX = MoveByVector.X,
-                TranslationY = MoveByVector.Y,
-                TranslationZ = MoveByVector.Z,
-                RotationX = RotateByVector.X,
-                RotationY = RotateByVector.Y,
-                RotationZ = RotateByVector.Z,
-                IsCalibrated = _isCalibrated,
-                IsConnected = Mouse6d.IsConnected
-            };
+            TDx.TDxInput.Vector3D translation = new TDx.TDxInput.Vector3D();
+            translation.X = MouseInfos.TranslationX;
+            translation.Y = MouseInfos.TranslationY;
+            translation.Z = MouseInfos.TranslationZ;
+            return translation;
         }
 
+        public TDx.TDxInput.AngleAxis GetRotationAxis()
+        {
+            TDx.TDxInput.AngleAxis rotation = new TDx.TDxInput.AngleAxis();
+            rotation.X = MouseInfos.RotationX;
+            rotation.Y = MouseInfos.RotationY;
+            rotation.Z = MouseInfos.RotationZ;
+            return rotation;
+        }
     }
 }
