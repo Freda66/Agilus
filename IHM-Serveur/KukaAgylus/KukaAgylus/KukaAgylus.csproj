@@ -146,6 +146,7 @@
     <Compile Include="Models\MouseInfos.cs" />
     <Compile Include="Models\NativeKeyboard.cs" />
     <Compile Include="Models\RobotInfos.cs" />
+    <Compile Include="Models\RobotTrajectoryController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Webservices\Mouse.asmx.cs">
       <DependentUpon>Mouse.asmx</DependentUpon>
