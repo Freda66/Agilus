@@ -28,7 +28,11 @@ namespace Mouse6d
             get { return MouseInfos.Treshold; }
             set { MouseInfos.Treshold = value; }
         }
-        public double VitesseTranslation = 100.0;
+        public double VitesseTranslation
+        {
+            get { return MouseInfos.Velocity; }
+            set { MouseInfos.Velocity = value; }
+        }
         public double VitesseRotation = 0.001;
 
         private volatile bool _calibrationEnd = false;
@@ -63,7 +67,7 @@ namespace Mouse6d
             while (!_calibrationEnd)
             {
                 Translation = GetTranslationVector();
-                Logs.AddLog("info", string.Format("MOUSE :  X : {0} | Y : {1} | Z : {2}", Translation.X, Translation.Y, Translation.Z));
+                //Logs.AddLog("info", string.Format("MOUSE :  X : {0} | Y : {1} | Z : {2}", Translation.X, Translation.Y, Translation.Z));
 
                 #region Get max X for calibration
                 if (Translation.X > MaxTransX)
