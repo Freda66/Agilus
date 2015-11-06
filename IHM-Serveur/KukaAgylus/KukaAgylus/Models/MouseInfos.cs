@@ -17,6 +17,7 @@ namespace KukaAgylus.Models
         public double RotationY { get; set; } = 0.0;
         public double RotationZ { get; set; } = 0.0;
         public double Angle { get; set; } = 0.0;
+        public double Treshold { get; set; } = 0.1;
 
         public string GetHtmlString()
         {
@@ -33,6 +34,7 @@ namespace KukaAgylus.Models
             builder.AppendFormat(htmlFormat, "Rotation Y", "mouse-roty", RotationY, string.Empty);
             builder.AppendFormat(htmlFormat, "Rotation Z", "mouse-rotz", RotationZ, string.Empty);
             builder.AppendFormat(htmlFormat, "Angle", "mouse-angle", Angle, string.Empty);
+            builder.AppendFormat(htmlFormat, "Treshold", "mouse-treshold", Treshold, string.Empty);
 
             return builder.ToString();
         }

@@ -15,9 +15,79 @@
     <p>
         <ul class="list-group" id="learning-process-infos"></ul>
     </p>
+
+    <p><button type="button" class="btn btn-default" id="btn-add-point" onclick="BtnAddPointClick()">Add current position</button></p>
+    <p><button type="button" class="btn btn-default" id="btn-add-open" onclick="BtnAddOpenClick()">Add open gripper</button></p>
+    <p><button type="button" class="btn btn-default" id="btn-add-close" onclick="BtnAddCloseClick()">Add close gripper</button></p>
+
+
 </div>
 
 <script>
+    function SaveProcess() {
+        $.ajax({
+            url: "/Home/SaveProcess",
+            type: "get",
+            data: { processName: $('#input-selected-process').val() },
+            success: function (response, textStatus, jqXHR) {
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function BtnAddPointClick() {
+        $.ajax({
+            url: "/Home/AddPoint",
+            type: "get",
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    LoadProcess($('#input-selected-process').val());
+                    SaveProcess();
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function BtnAddOpenClick() {
+        $.ajax({
+            url: "/Home/AddGripperAction",
+            type: "get",
+            data: { open: true },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    LoadProcess($('#input-selected-process').val());
+                    SaveProcess();
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function BtnAddCloseClick() {
+        $.ajax({
+            url: "/Home/AddGripperAction",
+            type: "get",
+            data: { open: false },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    LoadProcess($('#input-selected-process').val());
+                    SaveProcess();
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+
     //DRAG AND DROG IMPLEMENTATION
     var rows;
     var dragSrcEl = null;
@@ -66,8 +136,9 @@
             row.classList.remove('over');
             row.style.opacity = '1.0';
         });
+        SaveProcess();
     }
-    
+
     function initDnD() {
         rows = document.querySelectorAll('.drag-item');
         [].forEach.call(rows, function (row) {
@@ -92,7 +163,7 @@
         $.ajax({
             url: "/Home/GetProcessInfos",
             type: "get",
-            data: {processName: processName},
+            data: { processName: processName },
             success: function (response, textStatus, jqXHR) {
                 $('#learning-process-infos').empty();
                 for (var i in response) {
