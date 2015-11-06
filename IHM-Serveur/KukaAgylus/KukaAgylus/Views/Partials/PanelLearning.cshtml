@@ -47,6 +47,20 @@
 
 <script>
 
+    $("#input-selected-process").focusout(function () {
+        $.ajax({
+            url: "/Home/IsProcessExist",
+            type: "get",
+            data: { processName: $('#input-selected-process').val() },
+            success: function (response, textStatus, jqXHR) {
+                if (!response.Exist) { SaveProcess(); }
+                else { LoadProcess($('#input-selected-process').val()); }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    });
+
     function BtnStartProcessClick() {
         $.ajax({
             url: "/Home/StartProcess",
@@ -67,6 +81,8 @@
             data: { processName: $('#input-selected-process').val() },
             success: function (response, textStatus, jqXHR) {
                 if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                DisplayProcessList();
+                LoadProcess($('#input-selected-process').val());
             },
             error: function (jqXHR, textStatus, errorThrown) {
             }
@@ -79,7 +95,6 @@
             type: "get",
             success: function (response, textStatus, jqXHR) {
                 if (response.Success) {
-                    LoadProcess($('#input-selected-process').val());
                     SaveProcess();
                 }
                 if (typeof (UpdateLogs) == 'function') UpdateLogs();
@@ -96,7 +111,6 @@
             data: { open: true },
             success: function (response, textStatus, jqXHR) {
                 if (response.Success) {
-                    LoadProcess($('#input-selected-process').val());
                     SaveProcess();
                 }
                 if (typeof (UpdateLogs) == 'function') UpdateLogs();
@@ -113,7 +127,6 @@
             data: { open: false },
             success: function (response, textStatus, jqXHR) {
                 if (response.Success) {
-                    LoadProcess($('#input-selected-process').val());
                     SaveProcess();
                 }
                 if (typeof (UpdateLogs) == 'function') UpdateLogs();

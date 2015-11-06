@@ -18,6 +18,7 @@ namespace KukaAgylus.Models
         public double RotationZ { get; set; } = 0.0;
         public double Angle { get; set; } = 0.0;
         public double Treshold { get; set; } = 0.1;
+        public double Velocity { get; set; } = 65.0;
 
         public string GetHtmlString()
         {

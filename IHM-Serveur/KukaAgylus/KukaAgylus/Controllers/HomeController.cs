@@ -107,6 +107,7 @@ namespace KukaAgylus.Controllers
                 {
                     MyRobot.Connect(ip);
                     MvcApplication.RobotInfos.IsConnected = true;
+                    MyRobot.GetCurrentPosition();
                     success = true;
                     Logs.AddLog("info", "Robot connected");
                 }
@@ -134,7 +135,7 @@ namespace KukaAgylus.Controllers
             if (success && velocity != null)
             {
                 MvcApplication.RobotInfos.Velocity = velocity.Value;
-                MyMouse.VitesseTranslation = velocity.Value;
+                MouseInfos.Velocity = velocity.Value;
             }
             if (success)
             {
@@ -167,11 +168,13 @@ namespace KukaAgylus.Controllers
         {
             var processInfo = TrajectoryController.GetProcess(processName);
             var listActionName = new List<string>();
-            foreach(var proc in processInfo)
+            if (processInfo.Count > 0)
             {
-                listActionName.Add((string)proc.id);
+                foreach (var proc in processInfo)
+                {
+                    listActionName.Add((string)proc.id);
+                }
             }
-
             return Json(listActionName, JsonRequestBehavior.AllowGet);
         }
 
@@ -205,8 +208,12 @@ namespace KukaAgylus.Controllers
         }
 
         [HttpGet]
-        public ActionResult SaveProcess(string processName)
+        public ActionResult SaveProcess(string processName, bool newProcess = false)
         {
+            if (!TrajectoryController.IsProcessExist(processName))
+            {
+                TrajectoryController.ResetListAndCounters();
+            }
             TrajectoryController.SaveTrajectory(processName);
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
@@ -216,6 +223,11 @@ namespace KukaAgylus.Controllers
         {
             TrajectoryController.ExecuterTrajectoireEnregistree();
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult IsProcessExist(string processName)
+        {
+            return Json(new { Exist = TrajectoryController.IsProcessExist(processName) }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

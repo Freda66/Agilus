@@ -56,7 +56,7 @@ namespace KukaAgylus.Models
         #endregion
 
         #region listes et points
-        private List<CartesianPosition> liste_temp;
+        public List<CartesianPosition> liste_temp;
         private List<CartesianPosition> liste_aller_magasin;
         private List<CartesianPosition> liste_aller_magasin_to_plateau;
         private List<CartesianPosition> liste_placer_piece;
@@ -76,12 +76,8 @@ namespace KukaAgylus.Models
         public RobotTrajectoryController()
         {
             liste_temp = new List<CartesianPosition>();
-
-            /*init*/
-
             vecteur = new TDx.TDxInput.Vector3D();
             point_relatif = new CartesianPosition();
-            //liste_points = new List<CartesianPosition>();
             liste_aller_magasin = new List<CartesianPosition>();
             liste_aller_magasin_to_plateau = new List<CartesianPosition>();
             liste_placer_piece = new List<CartesianPosition>();
@@ -89,46 +85,14 @@ namespace KukaAgylus.Models
             plateau = new List<Emplacement>();
         }
 
-
-        public void ConnectionAuRobot(String adresseIP)
-        {
-            robot = new RobotController();
-            robot.Connect(adresseIP);
-            mouseTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
-            {
-                //Console.WriteLine("start program");
-                device = new TDx.TDxInput.Device();
-                device.Connect();
-                try
-                {
-                    robot.GetCurrentPosition();
-                    //Console.WriteLine("Connection success ! ");
-                }
-                catch (Exception exc)
-                {
-                    //Console.WriteLine("Connection failed ! => " + exc.Message);
-                }
-            });
-        }
-
-        //retourne la postion robot : X, Y, Z, A, B, C
-        public List<double> RecupererPositionRobot()
-        {
-            List<double> list = new List<double>();
-            list.Add(robot.GetCurrentPosition().X);
-            list.Add(robot.GetCurrentPosition().Y);
-            list.Add(robot.GetCurrentPosition().Z);
-            list.Add(robot.GetCurrentPosition().A);
-            list.Add(robot.GetCurrentPosition().B);
-            list.Add(robot.GetCurrentPosition().C);
-
-            return list;
-        }
-
         public void EnregistrerPositionRobot()
         {
             CartesianPosition point = new CartesianPosition();
-            point = robot.GetCurrentPosition();
+            try
+            {
+                point = robot.GetCurrentPosition();
+            }
+            catch { Logs.AddLog("error", "Robot not found: Calling GetCurrentPosition()"); }
 
             Console.WriteLine("EnregistrerPositionRobot()  => "
                 + " X: " + point.X
@@ -168,7 +132,11 @@ namespace KukaAgylus.Models
             actionOpenCount++;
 
             Console.WriteLine("OuvrirPince  =>  Open Gripper");
-            robot.OpenGripper();
+            try
+            {
+                robot.OpenGripper();
+            }
+            catch { Logs.AddLog("error", "Robot not found: Calling OpenGripper()"); }
         }
 
         public void FermerPince()
@@ -184,7 +152,11 @@ namespace KukaAgylus.Models
             actionCloseCount++;
 
             Console.WriteLine("FermerPince()  =>  Close Gripper");
-            robot.CloseGripper();
+            try
+            {
+                robot.CloseGripper();
+            }
+            catch { Logs.AddLog("error", "Robot not found: Calling CloseGripper()"); }
         }
 
         //return true si l'action a bien ete effectuee
@@ -199,7 +171,7 @@ namespace KukaAgylus.Models
                 Console.WriteLine("ExecuterTrajectoireEnregistree()  =>  type:" + actionList.GetType());
 
                 //if (actionList.GetType().ToString().Contains("CartesianPosition"))
-                if(actionList.Type == JTokenType.Array)
+                if (actionList.Type == JTokenType.Array)
                 {
                     List<CartesianPosition> trajectory = new List<CartesianPosition>();
                     foreach (var point in actionList)
@@ -216,17 +188,29 @@ namespace KukaAgylus.Models
                     }
 
                     Console.WriteLine("ExecuterTrajectoireEnregistree()  =>  nb pt trajectory : " + trajectory.Count);
-                    robot.PlayTrajectory(trajectory);
+                    try
+                    {
+                        robot.PlayTrajectory(trajectory);
+                    }
+                    catch { Logs.AddLog("error", "Robot not found: Calling PlayTrajectory()"); }
                 }
-                else 
+                else
                 {
                     if (actionList["isOpen"].Value)
                     {
-                        robot.OpenGripper();
+                        try
+                        {
+                            robot.OpenGripper();
+                        }
+                        catch { Logs.AddLog("error", "Robot not found: Calling OpenGripper()"); }
                     }
                     else
                     {
-                        robot.CloseGripper();
+                        try
+                        {
+                            robot.CloseGripper();
+                        }
+                        catch { Logs.AddLog("error", "Robot not found: Calling CloseGripper()"); }
                     }
                 }
             }
@@ -237,8 +221,19 @@ namespace KukaAgylus.Models
         {
             if (Directory.Exists(Environment.CurrentDirectory + @"\trajectories") && File.Exists(Environment.CurrentDirectory + @"\trajectories\" + filename + ".json"))
             {
+                ResetListAndCounters();
                 string json = File.ReadAllText(Environment.CurrentDirectory + @"\trajectories\" + filename + ".json");
                 liste_commandes = JsonConvert.DeserializeObject<List<dynamic>>(json);
+                foreach (var action in liste_commandes)
+                {
+                    if (action.list.Type == JTokenType.Array) movementCount++;
+                    else
+                    {
+                        if (action.list["isOpen"].Value) actionOpenCount++;
+                        else actionCloseCount++;
+                    }
+                }
+                if (liste_commandes == null) liste_commandes = new List<dynamic>();
                 return true;
             }
             return false;
@@ -253,19 +248,24 @@ namespace KukaAgylus.Models
 
         public void SaveTrajectory(string filename)
         {
-            if (!Directory.Exists(Environment.CurrentDirectory + @"\trajectories"))
-                Directory.CreateDirectory(Environment.CurrentDirectory + @"\trajectories");
-            File.WriteAllText(Environment.CurrentDirectory + @"\trajectories\" + filename + ".json", this.TrajectoryToJSON(), Encoding.UTF8);
+            if (filename != string.Empty)
+            {
+                if (!Directory.Exists(Environment.CurrentDirectory + @"\trajectories"))
+                    Directory.CreateDirectory(Environment.CurrentDirectory + @"\trajectories");
+                File.WriteAllText(Environment.CurrentDirectory + @"\trajectories\" + filename + ".json", this.TrajectoryToJSON(), Encoding.UTF8);
+            }
         }
 
         public List<string> GetProcessList()
         {
             string exportFolderAll = Environment.CurrentDirectory + @"\trajectories";
             var tempList = new List<string>();
-            if(Directory.Exists(Environment.CurrentDirectory + @"\trajectories"))
+            if (Directory.Exists(Environment.CurrentDirectory + @"\trajectories"))
                 foreach (string path in Directory.GetFiles(exportFolderAll).ToList<string>())
                 {
-                    tempList.Add(path.Split('\\').Last().Replace(".json", ""));
+                    var proc = path.Split('\\').Last().Replace(".json", "");
+                    if (proc != string.Empty)
+                        tempList.Add(proc);
                 }
             return tempList;
         }
@@ -274,6 +274,28 @@ namespace KukaAgylus.Models
         {
             LoadTrajectoryFromJsonFile(processName);
             return liste_commandes;
+        }
+
+        public bool IsProcessExist(string processName)
+        {
+            var files = Directory.GetFiles(Environment.CurrentDirectory + @"\trajectories");
+            bool fileExist = false;
+            foreach (var file in files)
+            {
+                if (file.Split('\\').Last().Replace(".json", "") == processName)
+                    fileExist = true;
+            }
+
+            return fileExist;
+        }
+
+        public void ResetListAndCounters()
+        {
+            liste_temp = new List<CartesianPosition>();
+            liste_commandes = new List<dynamic>();
+            movementCount = 0;
+            actionCloseCount = 0;
+            actionOpenCount = 0;
         }
     }
 
