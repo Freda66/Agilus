@@ -11,7 +11,7 @@ using KukaAgylus.Models;
 
 namespace KukaAgylus
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         public static LogManager Logs = new LogManager();
         
@@ -20,6 +20,8 @@ namespace KukaAgylus
 
         public static RobotController MyRobot = new RobotController();
         public static RobotInfos RobotInfos = new RobotInfos();
+
+        public static RobotTrajectoryController TrajectoryController = new RobotTrajectoryController() { Logs = Logs, robot = MyRobot };
 
         protected void Application_Start()
         {

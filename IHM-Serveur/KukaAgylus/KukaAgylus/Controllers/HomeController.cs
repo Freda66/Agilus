@@ -19,6 +19,8 @@ namespace KukaAgylus.Controllers
 
         private RobotController MyRobot = MvcApplication.MyRobot;
 
+        private RobotTrajectoryController TrajectoryController = MvcApplication.TrajectoryController;
+
         private bool _learningLoopRunning = false;
 
         #region Rooted views
@@ -56,7 +58,7 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult GetLogs()
         {
-            return Json(Logs.GetDisplayableLogs() , JsonRequestBehavior.AllowGet);
+            return Json(Logs.GetDisplayableLogs(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -132,7 +134,7 @@ namespace KukaAgylus.Controllers
             if (success && velocity != null)
             {
                 MvcApplication.RobotInfos.Velocity = velocity.Value;
-                MyMouse.Vitesse = velocity.Value;
+                MyMouse.VitesseTranslation = velocity.Value;
             }
             if (success)
             {
@@ -157,17 +159,58 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult GetProcessList()
         {
-            var fakeList = new List<string>() { "toto", "emile" };
-
-            return Json(fakeList, JsonRequestBehavior.AllowGet);
+            return Json(TrajectoryController.GetProcessList(), JsonRequestBehavior.AllowGet);
         }
-        
+
         [HttpGet]
         public ActionResult GetProcessInfos(string processName)
         {
-            var fakeProcessInfo = new List<string>() { "Mouvement1", "Open Gripper", "Movement2", "Close Gripper" };
+            var processInfo = TrajectoryController.GetProcess(processName);
+            var listActionName = new List<string>();
+            foreach(var proc in processInfo)
+            {
+                listActionName.Add(proc.id);
+            }
 
-            return Json(fakeProcessInfo, JsonRequestBehavior.AllowGet);
+            return Json(listActionName, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult SetMouseTreshold(double treshold)
+        {
+            MouseInfos.Treshold = treshold;
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddPoint()
+        {
+            TrajectoryController.EnregistrerPositionRobot();
+
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddGripperAction(bool open)
+        {
+            if (open)
+            {
+                TrajectoryController.OuvrirPince();
+            }
+            else
+            {
+                TrajectoryController.FermerPince();
+            }
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpGet]
+        public ActionResult SaveProcess(string processName)
+        {
+            TrajectoryController.SaveTrajectory(processName);
+
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion
