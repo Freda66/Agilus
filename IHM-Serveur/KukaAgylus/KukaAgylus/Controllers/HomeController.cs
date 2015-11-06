@@ -169,7 +169,7 @@ namespace KukaAgylus.Controllers
             var listActionName = new List<string>();
             foreach(var proc in processInfo)
             {
-                listActionName.Add(proc.id);
+                listActionName.Add((string)proc.id);
             }
 
             return Json(listActionName, JsonRequestBehavior.AllowGet);
@@ -204,12 +204,17 @@ namespace KukaAgylus.Controllers
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
 
-
         [HttpGet]
         public ActionResult SaveProcess(string processName)
         {
             TrajectoryController.SaveTrajectory(processName);
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
 
+        [HttpGet]
+        public ActionResult StartProcess(string processName)
+        {
+            TrajectoryController.ExecuterTrajectoireEnregistree();
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
 
