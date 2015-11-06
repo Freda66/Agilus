@@ -188,7 +188,7 @@ namespace KukaAgylus.Models
         }
 
         //return true si l'action a bien ete effectuee
-        private bool ExecuterTrajectoireEnregistree()
+        public bool ExecuterTrajectoireEnregistree()
         {
             //Console.WriteLine("Lancement trajectoire");
 
@@ -198,17 +198,29 @@ namespace KukaAgylus.Models
 
                 Console.WriteLine("ExecuterTrajectoireEnregistree()  =>  type:" + actionList.GetType());
 
-                if (actionList.GetType().ToString().Contains("CartesianPosition"))
+                //if (actionList.GetType().ToString().Contains("CartesianPosition"))
+                if(actionList.Type == JTokenType.Array)
                 {
                     List<CartesianPosition> trajectory = new List<CartesianPosition>();
-                    trajectory = (List<CartesianPosition>)actionList;
+                    foreach (var point in actionList)
+                    {
+                        trajectory.Add(new CartesianPosition()
+                        {
+                            X = point["X"],
+                            Y = point["Y"],
+                            Z = point["Z"],
+                            A = point["A"],
+                            B = point["B"],
+                            C = point["C"]
+                        });
+                    }
 
                     Console.WriteLine("ExecuterTrajectoireEnregistree()  =>  nb pt trajectory : " + trajectory.Count);
                     robot.PlayTrajectory(trajectory);
                 }
-                else if (actionList.GetType().ToString().Contains("Pince"))
+                else 
                 {
-                    if (((Pince)actionList).isOpen)
+                    if (actionList["isOpen"].Value)
                     {
                         robot.OpenGripper();
                     }
@@ -260,6 +272,7 @@ namespace KukaAgylus.Models
 
         public List<dynamic> GetProcess(string processName)
         {
+            LoadTrajectoryFromJsonFile(processName);
             return liste_commandes;
         }
     }
