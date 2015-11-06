@@ -49,8 +49,6 @@ namespace Robot
         
         private List<object> liste_commandes = new List<object>();
         private List<Emplacement> plateau;
-
-        private CartesianPosition pts;
         #endregion
 
         #region threads
@@ -81,6 +79,7 @@ namespace Robot
             NLX.Robot.Kuka.Controller.CartesianPosition pts4 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             // lève la pièce
+            // Coordonnées à revoir surtout pour les A, B et C
             pts4.X = 515.147888;
             pts4.Y = 237.083374;
             pts4.Z = 297.377289;
@@ -94,6 +93,7 @@ namespace Robot
             NLX.Robot.Kuka.Controller.CartesianPosition pts5 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             // recul pour retrait piece
+            // Coordonnées à revoir surtout pour les A, B et C
             pts5.X = 515.147888;
             pts5.Y = 75.3249283;
             pts5.Z = 297.377289;
@@ -106,6 +106,7 @@ namespace Robot
             NLX.Robot.Kuka.Controller.CartesianPosition pts6 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             // Rotation vers plateau
+            // Coordonnées à revoir surtout pour les A, B et C
             pts6.X = 660.406555;
             pts6.Y = -143.749481;
             pts6.Z = 431.472351;
@@ -122,6 +123,7 @@ namespace Robot
             NLX.Robot.Kuka.Controller.CartesianPosition pts2 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             // Saisie de la pièce
+            // Coordonnées à changer !
             pts2.X = 515.147888;
             pts2.Y = 184.597168;
             pts2.Z = 218.120453;
@@ -134,7 +136,8 @@ namespace Robot
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts3 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
-            // Pièce saisie 
+            // Pièce saisie
+            // Coordonnées à affiner surtout sur A, B et C
             pts3.X = 515.147888;
             pts3.Y = 237.083374;
             pts3.Z = 219.083771;
@@ -145,6 +148,8 @@ namespace Robot
             liste_aller_magasin.Add(pts3);
 
             robot.PlayTrajectory(liste_aller_magasin);
+
+            robot.CloseGripper();
             
         }
 
@@ -160,11 +165,11 @@ namespace Robot
             foreach (Emplacement emplacement in plateau)
             {
                 /*AllerAuMagasin();
-                robot.CloseGripper();
                 AllerAuPlateau();
 
                 */
                 temp.Clear();
+                // Permet de jouer point par point sur le plateau
                 temp.Add(emplacement.point);
 
                 robot.PlayTrajectory(temp);
@@ -186,13 +191,7 @@ namespace Robot
                 Thread.Sleep(1000);
                 monPoint.Z = 230.0;
                 robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();
-
-                AllerAuMagasin();*/
-                
-                
-                
-                
+                robot.StopRelativeMovement();*/
             }
         }
 
