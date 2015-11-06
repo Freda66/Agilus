@@ -20,7 +20,7 @@ namespace Mouse6d
 
         public double Treshold = 0.1; // Filled by a textField
         public double VitesseTranslation = 100.0;
-        public double VitesseRotation = 0.2;
+        public double VitesseRotation = 0.001;
         
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
         #endregion
@@ -150,9 +150,16 @@ namespace Mouse6d
                     #region Rotation X first
                     if (Math.Abs(Rotation.X) > Math.Abs(Rotation.Y) && Math.Abs(Rotation.X) > Math.Abs(Rotation.Z))
                     {
-                        RotateByVector.X = Rotation.Angle * VitesseRotation;
-                        RotateByVector.Y = 0.0;
-                        RotateByVector.Z = 0.0;
+                        if (Rotation.X > 0)
+                        {
+                            RotateByVector.X = Rotation.Angle * VitesseRotation;
+                        }
+                        else
+                        {
+                            RotateByVector.X = - Rotation.Angle * VitesseRotation;
+                        }
+                            RotateByVector.Y = 0.0;
+                            RotateByVector.Z = 0.0;
                     }
                     #endregion
 
@@ -160,7 +167,16 @@ namespace Mouse6d
                     if (Math.Abs(Rotation.Y) > Math.Abs(Rotation.X) && Math.Abs(Rotation.Y) > Math.Abs(Rotation.Z))
                     {
                         RotateByVector.X = 0.0;
-                        RotateByVector.Y = Rotation.Angle * VitesseRotation;
+
+                        if (Rotation.Y > 0)
+                        {
+                            RotateByVector.Y = Rotation.Angle * VitesseRotation;
+                        }
+                        else
+                        {
+                            RotateByVector.Y = - Rotation.Angle * VitesseRotation;
+                        }
+
                         RotateByVector.Z = 0.0;
                     }
                     #endregion
@@ -170,7 +186,15 @@ namespace Mouse6d
                     {
                         RotateByVector.X = 0.0;
                         RotateByVector.Y = 0.0;
-                        RotateByVector.Z = Rotation.Angle * VitesseRotation;
+
+                        if (Rotation.Z > 0)
+                        {
+                            RotateByVector.Z = Rotation.Angle * VitesseRotation;
+                        }
+                        else
+                        {
+                            RotateByVector.Z = - Rotation.Angle * VitesseRotation;
+                        }
                     }
                     #endregion
                 }
