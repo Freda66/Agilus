@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLX.Robot.Kuka.Controller;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace KukaAgylus.Models
 {
     public class RobotInfos
     {
+        public RobotController Robot;
+
         public bool IsConnected { get; set; } = false;
         public string Mode { get; set; } = "Offline";
         public bool IsGripperOpened { get; set; } = false;
