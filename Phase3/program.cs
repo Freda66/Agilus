@@ -42,20 +42,20 @@ namespace Robot
         #region listes et points
         private List<CartesianPosition> liste_temp;
         private List<CartesianPosition> liste_aller_magasin;
-        private List<CartesianPosition> liste_aller_magasin_to_plateau;
+        private List<CartesianPosition> liste_aller_plateau;
         private List<CartesianPosition> liste_placer_piece;
         private List<CartesianPosition> liste_retour_magasin;
 
         
         private List<object> liste_commandes = new List<object>();
         private List<Emplacement> plateau;
-
-        private CartesianPosition pts;
         #endregion
 
         #region threads
         private System.Threading.Tasks.Task mouseTask;
         #endregion
+
+
 
         public RobotActions()
         {
@@ -66,10 +66,91 @@ namespace Robot
             vecteur = new TDx.TDxInput.Vector3D();
             point_relatif = new CartesianPosition();
             liste_aller_magasin = new List<CartesianPosition>();
-            liste_aller_magasin_to_plateau = new List<CartesianPosition>();
+            liste_aller_plateau = new List<CartesianPosition>();
             liste_placer_piece = new List<CartesianPosition>();
             liste_retour_magasin = new List<CartesianPosition>();
             plateau = new Plateau().GetPlateau();
+
+        }
+
+        private void AllerAuPlateau()
+        {
+
+            NLX.Robot.Kuka.Controller.CartesianPosition pts4 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+
+            // lève la pièce
+            // Coordonnées à revoir surtout pour les A, B et C
+            pts4.X = 515.147888;
+            pts4.Y = 237.083374;
+            pts4.Z = 297.377289;
+            pts4.A = 72.1285477;
+            pts4.B = 85.9736862;
+            pts4.C = -15.78833;
+
+            liste_aller_plateau.Add(pts4);
+            Console.WriteLine("pts 4");
+
+            NLX.Robot.Kuka.Controller.CartesianPosition pts5 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+
+            // recul pour retrait piece
+            // Coordonnées à revoir surtout pour les A, B et C
+            pts5.X = 515.147888;
+            pts5.Y = 75.3249283;
+            pts5.Z = 297.377289;
+            pts5.A = 72.1285477;
+            pts5.B = 85.9736862;
+            pts5.C = -15.78833;
+            liste_aller_plateau.Add(pts5);
+            Console.WriteLine("pts 5");
+
+            NLX.Robot.Kuka.Controller.CartesianPosition pts6 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+
+            // Rotation vers plateau
+            // Coordonnées à revoir surtout pour les A, B et C
+            pts6.X = 660.406555;
+            pts6.Y = -143.749481;
+            pts6.Z = 431.472351;
+            pts6.A = -107.49276;
+            pts6.B = 2.0946629;
+            pts6.C = -90.567405;
+            liste_aller_plateau.Add(pts6);
+
+            robot.PlayTrajectory(liste_aller_plateau);
+        }
+
+        private void AllerAuMagasin()
+        {
+            NLX.Robot.Kuka.Controller.CartesianPosition pts2 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+
+            // Saisie de la pièce
+            // Coordonnées à changer !
+            pts2.X = 515.147888;
+            pts2.Y = 184.597168;
+            pts2.Z = 218.120453;
+            pts2.A = 72.1285477;
+            pts2.B = 85.9736862;
+            pts2.C = -15.78833;
+
+            liste_aller_magasin.Add(pts2);
+            Console.WriteLine("pts 2");
+
+            NLX.Robot.Kuka.Controller.CartesianPosition pts3 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+
+            // Pièce saisie
+            // Coordonnées à affiner surtout sur A, B et C
+            pts3.X = 515.147888;
+            pts3.Y = 237.083374;
+            pts3.Z = 219.083771;
+            pts3.A = 72.1285477;
+            pts3.B = 85.9736862;
+            pts3.C = -15.78833;
+
+            liste_aller_magasin.Add(pts3);
+
+            robot.PlayTrajectory(liste_aller_magasin);
+
+            robot.CloseGripper();
+            
         }
 
         /// <summary>
@@ -80,13 +161,37 @@ namespace Robot
             // Création d'une liste temporaire pour tester les emplacements
             List<CartesianPosition> temp = new List<CartesianPosition>();
 
+            
             foreach (Emplacement emplacement in plateau)
             {
+                /*AllerAuMagasin();
+                AllerAuPlateau();
+
+                */
                 temp.Clear();
+                // Permet de jouer point par point sur le plateau
                 temp.Add(emplacement.point);
 
                 robot.PlayTrajectory(temp);
                 Thread.Sleep(5000);
+                /*
+                robot.StartRelativeMovement();
+                Thread.Sleep(2000);
+
+                CartesianPosition monPoint = new CartesianPosition();
+                monPoint.X = 0.0;
+                monPoint.Y = 0.0;
+                monPoint.Z = -20.0;
+                robot.SetRelativeMovement(monPoint);
+                robot.StopRelativeMovement();
+                Thread.Sleep(500);
+                robot.OpenGripper();
+
+                robot.StartRelativeMovement();
+                Thread.Sleep(1000);
+                monPoint.Z = 230.0;
+                robot.SetRelativeMovement(monPoint);
+                robot.StopRelativeMovement();*/
             }
         }
 
