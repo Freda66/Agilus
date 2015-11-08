@@ -80,12 +80,12 @@ namespace Robot
 
             // lève la pièce
             // Coordonnées à revoir surtout pour les A, B et C
-            pts4.X = 515.147888;
-            pts4.Y = 237.083374;
-            pts4.Z = 297.377289;
-            pts4.A = 72.1285477;
-            pts4.B = 85.9736862;
-            pts4.C = -15.78833;
+            pts4.X = 503.16;
+            pts4.Y = 232.13;
+            pts4.Z = 316.00;
+            pts4.A = 73.61;
+            pts4.B = -86.54;
+            pts4.C = -158.52;
 
             liste_aller_plateau.Add(pts4);
             Console.WriteLine("pts 4");
@@ -94,16 +94,16 @@ namespace Robot
 
             // recul pour retrait piece
             // Coordonnées à revoir surtout pour les A, B et C
-            pts5.X = 515.147888;
-            pts5.Y = 75.3249283;
-            pts5.Z = 297.377289;
-            pts5.A = 72.1285477;
-            pts5.B = 85.9736862;
-            pts5.C = -15.78833;
+            pts5.X = 503.16;
+            pts5.Y = 150.46;
+            pts5.Z = 316.00;
+            pts5.A = 73.61;
+            pts5.B = -86.54;
+            pts5.C = -158.52;
             liste_aller_plateau.Add(pts5);
             Console.WriteLine("pts 5");
 
-            NLX.Robot.Kuka.Controller.CartesianPosition pts6 = new NLX.Robot.Kuka.Controller.CartesianPosition();
+           /* NLX.Robot.Kuka.Controller.CartesianPosition pts6 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             // Rotation vers plateau
             // Coordonnées à revoir surtout pour les A, B et C
@@ -113,7 +113,7 @@ namespace Robot
             pts6.A = -107.49276;
             pts6.B = 2.0946629;
             pts6.C = -90.567405;
-            liste_aller_plateau.Add(pts6);
+            liste_aller_plateau.Add(pts6);*/
 
             robot.PlayTrajectory(liste_aller_plateau);
         }
@@ -124,12 +124,12 @@ namespace Robot
 
             // Saisie de la pièce
             // Coordonnées à changer !
-            pts2.X = 515.147888;
-            pts2.Y = 184.597168;
-            pts2.Z = 218.120453;
-            pts2.A = 72.1285477;
-            pts2.B = 85.9736862;
-            pts2.C = -15.78833;
+            pts2.X = 503.16;
+            pts2.Y = 174.39;
+            pts2.Z = 219.45;
+            pts2.A = 80.60;
+            pts2.B = -83.91;
+            pts2.C = -168.19;
 
             liste_aller_magasin.Add(pts2);
             Console.WriteLine("pts 2");
@@ -138,13 +138,16 @@ namespace Robot
 
             // Pièce saisie
             // Coordonnées à affiner surtout sur A, B et C
-            pts3.X = 515.147888;
-            pts3.Y = 237.083374;
-            pts3.Z = 219.083771;
-            pts3.A = 72.1285477;
-            pts3.B = 85.9736862;
-            pts3.C = -15.78833;
+            pts3.X = 503.16;
+            pts3.Y = 232.13;
+            pts3.Z = 216.00;
+            pts3.A = 73.61;
+            pts3.B = -86.54;
+            pts3.C = -158.52;
 
+            //A rotation autour de Z
+            //B rotation autour de Y
+            //C rotation autour de X
             liste_aller_magasin.Add(pts3);
 
             robot.PlayTrajectory(liste_aller_magasin);
@@ -164,17 +167,17 @@ namespace Robot
             
             foreach (Emplacement emplacement in plateau)
             {
-                /*AllerAuMagasin();
+                AllerAuMagasin();
                 AllerAuPlateau();
 
-                */
+                
                 temp.Clear();
                 // Permet de jouer point par point sur le plateau
                 temp.Add(emplacement.point);
 
                 robot.PlayTrajectory(temp);
                 Thread.Sleep(5000);
-                /*
+                
                 robot.StartRelativeMovement();
                 Thread.Sleep(2000);
 
@@ -191,7 +194,7 @@ namespace Robot
                 Thread.Sleep(1000);
                 monPoint.Z = 230.0;
                 robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();*/
+                robot.StopRelativeMovement();
             }
         }
 
