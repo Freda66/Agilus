@@ -137,3 +137,18 @@ label {
 .drag-item.over {
   border: 2px dashed #000;
 }
+
+.inside-list-group {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.inside-list-group-item {
+  background-color: #1c1e22;
+  color:  #c8c8c8;
+}
+
+.selected {
+    border-style: dashed;
+    border-width: medium;
+}

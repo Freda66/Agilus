@@ -8,7 +8,7 @@
     <row>
         <div class="col-md-6">
             <div class="input-group">
-                <span class="input-group-addon" id="ipadress-addon">Process</span>
+                <span class="input-group-addon" id="process-addon">Process</span>
                 <input type="text" id="input-selected-process" class="form-control" placeholder="No Process selected">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,6 +23,15 @@
             </p>
         </div>
         <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon" id="movement-addon">Move</span>
+                    <input type="text" id="input-add-move" class="form-control" placeholder="Create new move">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default" onclick="BtnAddMoveClick()">Add</button>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12">
                 <div class="col-md-6">
                     <button type="button" class="btn btn-default" id="btn-add-open" onclick="BtnAddOpenClick()">Add open gripper</button>
@@ -46,111 +55,195 @@
 </div>
 
 <script>
+    var guidSelectedMovement = "";
+    function DisplayMovementElement(movementId) {
+        $('.list-group-item').removeClass('selected');
+        $('.inside-list-group').hide();
+        if (guidSelectedMovement != movementId) {
+            $('#' + movementId).addClass('selected');
+            $('#group-' + movementId).show();
+            guidSelectedMovement = movementId;
+        } else {
+            guidSelectedMovement = "";
+        }
+    }
 
-    $("#input-selected-process").focusout(function () {
+    function DeleteProcessElement(elementId) {
+        $('#' + elementId).remove();
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallDeleteCommand(processName, elementId)
+    }
+
+    function RefreshProcessInfo() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallGetHtmlProcess(processName);
+        else
+            $('#learning-process-infos').empty();
+    }
+
+    function CallGetProcessNameList() {
         $.ajax({
-            url: "/Home/IsProcessExist",
+            url: "/Home/GetProcessNameList",
             type: "get",
-            data: { processName: $('#input-selected-process').val() },
             success: function (response, textStatus, jqXHR) {
-                if (!response.Exist) { SaveProcess(); }
-                else { LoadProcess($('#input-selected-process').val()); }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
+                $('#learning-process-list').empty();
+                for (var i in response) {
+                    var entry = "<li><a onclick='CallGetHtmlProcess(\"" + response[i] + "\")'>" + response[i] + "</a></li>";
+                    $('#learning-process-list').append(entry);
+                }
             }
         });
-    });
+    }
+    CallGetProcessNameList();
 
-    function BtnStartProcessClick() {
+    function CallGetHtmlProcess(processName) {
+        $('#input-selected-process').val(processName);
+        $.ajax({
+            url: "/Home/GetHtmlProcess",
+            type: "get",
+            data: { processName: processName },
+            success: function (response, textStatus, jqXHR) {
+                CallGetProcessNameList();
+                $('#learning-process-infos').empty();
+                $('#learning-process-infos').append(response);
+                InitDnD();
+                if (response.indexOf(guidSelectedMovement) > 0) {
+                    var tempId = guidSelectedMovement;
+                    guidSelectedMovement = "";
+                    DisplayMovementElement(tempId);
+                } else {
+                    $('.inside-list-group').hide();
+                    guidSelectedMovement = "";
+                }
+            }
+        });
+    }
+
+    function CallSwitchCommand(processName, guidCmd1, guidCmd2) {
+        $.ajax({
+            url: "/Home/SwitchCommand",
+            type: "get",
+            data: { processName: processName, guidCmd1: guidCmd1, guidCmd2: guidCmd2 },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallAddCurrentPosition(processName, guidMovement) {
+        $.ajax({
+            url: "/Home/AddCurrentPosition",
+            type: "get",
+            data: { processName: processName, guidMovement: guidMovement },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallAddGripperAction(processName, open) {
+        $.ajax({
+            url: "/Home/AddGripperAction",
+            type: "get",
+            data: { processName: processName, open: open },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallAddMovement(processName, movementName) {
+        $.ajax({
+            url: "/Home/AddMovement",
+            type: "get",
+            data: { processName: processName, movementName: movementName },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallStartProcess(processName) {
         $.ajax({
             url: "/Home/StartProcess",
             type: "get",
-            data: { processName: $('#input-selected-process').val() },
+            data: { processName: processName },
             success: function (response, textStatus, jqXHR) {
-                if (typeof (UpdateLogs) == 'function') UpdateLogs();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
+                if (typeof (UpdateLogs) == 'function')
+                    UpdateLogs();
             }
         });
     }
 
-    function SaveProcess() {
+    function CallDeleteCommand(processName, guidCmd) {
         $.ajax({
-            url: "/Home/SaveProcess",
+            url: "/Home/DeleteCommand",
             type: "get",
-            data: { processName: $('#input-selected-process').val() },
+            data: { processName: processName, guidCmd: guidCmd },
             success: function (response, textStatus, jqXHR) {
-                if (typeof (UpdateLogs) == 'function') UpdateLogs();
-                DisplayProcessList();
-                LoadProcess($('#input-selected-process').val());
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
+                RefreshProcessInfo();
             }
         });
+    }
+
+    $("#input-selected-process").focusout(function () {
+        RefreshProcessInfo();
+    });
+
+    function BtnStartProcessClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallStartProcess(processName);
     }
 
     function BtnAddPointClick() {
-        $.ajax({
-            url: "/Home/AddPoint",
-            type: "get",
-            success: function (response, textStatus, jqXHR) {
-                if (response.Success) {
-                    SaveProcess();
-                }
-                if (typeof (UpdateLogs) == 'function') UpdateLogs();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
+        var processName = $('#input-selected-process').val();
+        if (processName != "" && guidSelectedMovement != "")
+            CallAddCurrentPosition(processName, guidSelectedMovement);
     }
 
     function BtnAddOpenClick() {
-        $.ajax({
-            url: "/Home/AddGripperAction",
-            type: "get",
-            data: { open: true },
-            success: function (response, textStatus, jqXHR) {
-                if (response.Success) {
-                    SaveProcess();
-                }
-                if (typeof (UpdateLogs) == 'function') UpdateLogs();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddGripperAction(processName, true);
     }
 
     function BtnAddCloseClick() {
-        $.ajax({
-            url: "/Home/AddGripperAction",
-            type: "get",
-            data: { open: false },
-            success: function (response, textStatus, jqXHR) {
-                if (response.Success) {
-                    SaveProcess();
-                }
-                if (typeof (UpdateLogs) == 'function') UpdateLogs();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddGripperAction(processName, false);
+    }
+
+    function BtnAddMoveClick() {
+        var moveName = $('#input-add-move').val();
+        var processName = $('#input-selected-process').val();
+        if (moveName != "" && processName != "")
+            CallAddMovement(processName, moveName);
+        $('#input-add-move').val("");
     }
 
 
-    //DRAG AND DROG IMPLEMENTATION
+    //////////////////////////////////////
+    /////DRAG AND DROG IMPLEMENTATION/////
+    //////////////////////////////////////
+
     var rows;
     var dragSrcEl = null;
 
-    function handleDragStart(e) {
+    function HandleDragStart(e) {
         this.style.opacity = '0.4';
         dragSrcEl = this;
-
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/html', this.innerHTML);
         e.dataTransfer.setData('id', this.id);
+        $('.list-group-item').removeClass('selected');
+        $('.inside-list-group').hide();
+        guidSelectedMovement = "";
     }
 
-    function handleDragOver(e) {
+    function HandleDragOver(e) {
         if (e.preventDefault) {
             e.preventDefault();
         }
@@ -158,17 +251,17 @@
         return false;
     }
 
-    function handleDragEnter(e) {
+    function HandleDragEnter(e) {
         this.classList.add('over');
     }
 
-    function handleDragLeave(e) {
+    function HandleDragLeave(e) {
         this.classList.remove('over');
     }
 
-    function handleDrop(e) {
+    function HandleDrop(e) {
         if (e.stopPropagation) {
-            e.stopPropagation(); // stops the browser from redirecting.
+            e.stopPropagation();
         }
         if (dragSrcEl != this) {
             // Set the source column's HTML to the HTML of the column we dropped on.
@@ -176,72 +269,35 @@
             dragSrcEl.id = this.id;
             this.innerHTML = e.dataTransfer.getData('text/html');
             this.id = e.dataTransfer.getData('id');
+
+            var processName = $('#input-selected-process').val();
+            CallSwitchCommand(processName, dragSrcEl.id, this.id);
         }
         return false;
     }
 
-    function handleDragEnd(e) {
+    function HandleDragEnd(e) {
         [].forEach.call(rows, function (row) {
             row.classList.remove('over');
             row.style.opacity = '1.0';
         });
-        SaveProcess();
     }
 
-    function initDnD() {
+    function InitDnD() {
         rows = document.querySelectorAll('.drag-item');
         [].forEach.call(rows, function (row) {
-            row.addEventListener('dragstart', handleDragStart, false);
-            row.addEventListener('dragenter', handleDragEnter, false);
-            row.addEventListener('dragover', handleDragOver, false);
-            row.addEventListener('dragleave', handleDragLeave, false);
-            row.addEventListener('drop', handleDrop, false);
-            row.addEventListener('dragend', handleDragEnd, false);
+            row.addEventListener('dragstart', HandleDragStart, false);
+            row.addEventListener('dragenter', HandleDragEnter, false);
+            row.addEventListener('dragover', HandleDragOver, false);
+            row.addEventListener('dragleave', HandleDragLeave, false);
+            row.addEventListener('drop', HandleDrop, false);
+            row.addEventListener('dragend', HandleDragEnd, false);
         });
     }
 
+    //////////////////////////////////////
+    //////////END DRAG AND DROP///////////
+    //////////////////////////////////////
 
-    //END DRAG AND DROP
-
-    function DeleteProcessElement(elementId) {
-        $('#' + elementId).remove();
-    }
-
-    function LoadProcess(processName) {
-        $('#input-selected-process').val(processName);
-        $.ajax({
-            url: "/Home/GetProcessInfos",
-            type: "get",
-            data: { processName: processName },
-            success: function (response, textStatus, jqXHR) {
-                $('#learning-process-infos').empty();
-                for (var i in response) {
-                    var entry = "<li class='list-group-item drag-item'  draggable='true' id='proc-item-" + response[i].replace(' ', '') + "'>" + response[i] + "<span class='badge'><a href='javascript:DeleteProcessElement(\"proc-item-" + response[i].replace(' ', '') + "\")'>X</a></span></li>";
-                    $('#learning-process-infos').append(entry);
-                }
-                initDnD();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
-
-    }
-
-    function DisplayProcessList() {
-        $.ajax({
-            url: "/Home/GetProcessList",
-            type: "get",
-            success: function (response, textStatus, jqXHR) {
-                $('#learning-process-list').empty();
-                for (var i in response) {
-                    var entry = "<li><a onclick='LoadProcess(\"" + response[i] + "\")'>" + response[i] + "</a></li>";
-                    $('#learning-process-list').append(entry);
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            }
-        });
-    }
-    DisplayProcessList();
 
 </script>
