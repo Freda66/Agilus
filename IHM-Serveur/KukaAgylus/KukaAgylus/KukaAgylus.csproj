@@ -154,8 +154,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\images\plateau_calibration.png">
+      <BrowseToURL>~/Content/plateau_calibration.png</BrowseToURL>
+    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jquery-ui.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -167,6 +174,7 @@
     <Content Include="lib\Wop_Contracts.dll" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\jquery-ui-1.11.3.js" />
     <Content Include="Webservices\Mouse.asmx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -200,6 +208,7 @@
     <Content Include="Views\Partials\PanelLearning.cshtml" />
     <Content Include="Views\Home\Console.cshtml" />
     <Content Include="Views\Home\Infos.cshtml" />
+    <Content Include="Views\Partials\ModalCalibrationPlateau.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

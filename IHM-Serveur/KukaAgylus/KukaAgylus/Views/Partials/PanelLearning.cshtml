@@ -50,11 +50,21 @@
                     <button type="button" class="btn btn-default" id="btn-start-process" onclick="BtnStartProcessClick()">Play current trajectory</button>
                 </div>
             </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" id="btn-calib-plateau">Plateau calibration</button>
+                </div>
+            </div>
         </div>
     </row>
 </div>
 
+@Html.Partial("~/Views/Partials/ModalCalibrationPlateau.cshtml")
+
 <script>
+
+
+
     var guidSelectedMovement = "";
     function DisplayMovementElement(movementId) {
         $('.list-group-item').removeClass('selected');
