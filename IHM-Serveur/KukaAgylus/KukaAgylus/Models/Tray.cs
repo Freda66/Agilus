@@ -10,24 +10,6 @@ using System.Web;
 
 namespace KukaAgylus.Models
 {
-
-    /*  D   O   O   A
-     *  O   O   O   O
-     *  O   O   O   O
-     *  C   O   O   B
-     *              
-     *              KUKA
-     * */
-
-    public class CalibrationInfos
-    {
-        public CartesianPosition PointA { get; set; }
-        public CartesianPosition PointB { get; set; }
-        public CartesianPosition PointC { get; set; }
-        public int RowsCount { get; set; }
-        public int ColsCount { get; set; }
-    }
-
     public class Tray
     {
         private class Location
@@ -35,6 +17,15 @@ namespace KukaAgylus.Models
             public int RowIndex { get; set; }
             public int ColIndex { get; set; }
             public bool IsBusy { get; set; } = false;
+        }
+
+        private class CalibrationInfos
+        {
+            public CartesianPosition PointA { get; set; }
+            public CartesianPosition PointB { get; set; }
+            public CartesianPosition PointC { get; set; }
+            public int RowsCount { get; set; }
+            public int ColsCount { get; set; }
         }
 
         private List<Location> Locations { get; set; } = new List<Location>();
@@ -90,6 +81,7 @@ namespace KukaAgylus.Models
                 ColsCount = this.ColsCount
             };
         }
+
         private void LoadCalibrationInfos(CalibrationInfos infos)
         {
             this.PointA = infos.PointA;
@@ -99,7 +91,6 @@ namespace KukaAgylus.Models
             this.ColsCount = infos.ColsCount;
         }
 
-
         /// <summary>
         /// Initialise la liste des Locations du plateau
         /// </summary>
@@ -107,15 +98,16 @@ namespace KukaAgylus.Models
         {
             for (int i = 0; i < RowsCount; i++)
             {
-                for (int y = 0; y < ColsCount; y++)
+                for (int j = 0; j < ColsCount; j++)
                 {
                     Locations.Add(new Location()
                     {
                         RowIndex = i,
-                        ColIndex = y
+                        ColIndex = j
                     });
                 }
             }
+            Locations.Reverse();
         }
 
         private CartesianPosition GetPositionByLocation(Location location)
@@ -134,8 +126,8 @@ namespace KukaAgylus.Models
                 Y = posy,
                 Z = PointA.Z,
                 A = PointA.A,
-                B = PointA.C,
-                C = PointC.C
+                B = PointA.B,
+                C = PointA.C
             };
         }
 
@@ -163,10 +155,6 @@ namespace KukaAgylus.Models
                 if (!loc.IsBusy)
                     locationsEmpty.Add(loc);
             }
-            /*
-            var locationsEmpty = from loc in Locations
-                                 where !loc.IsBusy
-                                 select loc;*/
             if (locationsEmpty.Count() > 0)
             {
                 locationsEmpty.First().IsBusy = true;
@@ -183,7 +171,7 @@ namespace KukaAgylus.Models
             {
                 //Création du point d'approche superieur
                 var upperPoint = GetPositionByLocation(loc);
-                upperPoint.Z += 200;
+                upperPoint.Z += 180;
                 //Création du point de depose/retrait
                 var insidePoint = GetPositionByLocation(loc);
                 insidePoint.Z -= 70;
@@ -261,18 +249,14 @@ namespace KukaAgylus.Models
                 }
             }
         }
+
         public void SaveTrayCalibration()
         {
             // Création du répertoire tray s'il n'existe pas
             if (!Directory.Exists(Environment.CurrentDirectory + @"\tray"))
                 Directory.CreateDirectory(Environment.CurrentDirectory + @"\tray");
-            var calibPositions = new List<CartesianPosition>()
-            {
-                PointA,
-                PointB,
-                PointC
-            };
-            // Sauvegarde du process
+            
+            // Sauvegarde du fichier de calibration
             File.WriteAllText(Environment.CurrentDirectory + @"\tray\tray_calib.json", JsonConvert.SerializeObject(GetCalibrationInfos()), Encoding.UTF8);
         }
     }
