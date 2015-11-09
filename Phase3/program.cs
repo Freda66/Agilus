@@ -168,14 +168,14 @@ namespace Robot
 
 
                 temp.Clear();
-                Console.Write("on descend");
+                Console.WriteLine("on descend");
                 emplacement.point.Z += -70;
                 temp.Add(emplacement.point);
                 robot.PlayTrajectory(temp);
 
                 robot.OpenGripper();
                 temp.Clear();
-                Console.Write("on remonte");
+                Console.WriteLine("on remonte");
                 emplacement.point.Z += 200;
                 temp.Add(emplacement.point);
                 robot.PlayTrajectory(temp);
@@ -205,7 +205,7 @@ namespace Robot
                 robot.StopRelativeMovement();
                 Thread.Sleep(3000);*/
 
-                Console.Write("sleep");
+                Console.WriteLine("sleep");
                 /*
                 // Relève la pince. Modification
                 robot.StartRelativeMovement();
