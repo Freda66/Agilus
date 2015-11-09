@@ -30,10 +30,14 @@ namespace Mouse6d
         }
         public double VitesseTranslation
         {
-            get { return MouseInfos.Velocity; }
-            set { MouseInfos.Velocity = value; }
+            get { return MouseInfos.TranslationVelocity; }
+            set { MouseInfos.TranslationVelocity = value; }
         }
-        public double VitesseRotation = 0.001;
+        public double VitesseRotation
+        {
+            get { return MouseInfos.RotationVelocity; }
+            set { MouseInfos.RotationVelocity = value; }
+        }
 
         private volatile bool _calibrationEnd = false;
         private volatile bool _shouldStop; // Attribut qui permet d'arreter le thread et accessible par d'autre thread (volatile)
