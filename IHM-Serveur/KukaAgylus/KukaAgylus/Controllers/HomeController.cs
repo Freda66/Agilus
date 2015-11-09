@@ -4,6 +4,7 @@ using NLX.Robot.Kuka.Controller;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -18,8 +19,6 @@ namespace KukaAgylus.Controllers
         private Mouse MyMouse = MvcApplication.MyMouse;
 
         private RobotController MyRobot = MvcApplication.MyRobot;
-
-        private RobotTrajectoryController TrajectoryController = MvcApplication.TrajectoryController;
 
         private bool _learningLoopRunning = false;
 
@@ -54,7 +53,7 @@ namespace KukaAgylus.Controllers
         }
         #endregion
 
-        #region Request for Ajax purpose
+        #region Request for Logs & Infos
         [HttpGet]
         public ActionResult GetLogs()
         {
@@ -73,7 +72,9 @@ namespace KukaAgylus.Controllers
         {
             return Json(MvcApplication.RobotInfos.GetHtmlString(), JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
+        #region Settings Robot & Mouse
         [HttpGet]
         public ActionResult SwitchMouseCalibration(bool start)
         {
@@ -152,30 +153,10 @@ namespace KukaAgylus.Controllers
             else
             {
                 Logs.AddLog("error", "Invalid operation while settings change");
+                MyRobot.StopRelativeMovement();
             }
 
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public ActionResult GetProcessList()
-        {
-            return Json(TrajectoryController.GetProcessList(), JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public ActionResult GetProcessInfos(string processName)
-        {
-            var processInfo = TrajectoryController.GetProcess(processName);
-            var listActionName = new List<string>();
-            if (processInfo.Count > 0)
-            {
-                foreach (var proc in processInfo)
-                {
-                    listActionName.Add((string)proc.id);
-                }
-            }
-            return Json(listActionName, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -184,53 +165,102 @@ namespace KukaAgylus.Controllers
             MouseInfos.Treshold = treshold;
             return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
+        #region Process Management
         [HttpGet]
-        public ActionResult AddPoint()
+        public ActionResult GetProcessNameList()
         {
-            TrajectoryController.EnregistrerPositionRobot();
-
-            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+            return Json(RobotProcessController.GetProcessNameList(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public ActionResult AddGripperAction(bool open)
+        public ActionResult GetHtmlProcess(string processName)
         {
-            if (open)
+            if (!string.IsNullOrEmpty(processName))
             {
-                TrajectoryController.OuvrirPince();
+                var process = new RobotProcess(processName);
+
+                var htmlFormat = "<li class='list-group-item drag-item'  draggable='true' id='{0}'>{1}<span class='badge'><a class='glyphicon glyphicon-remove' href='javascript:DeleteProcessElement(\"{0}\")'></a></span>{2}</li>";
+                var processBuilder = new StringBuilder();
+
+                foreach (var cmd in process.Commands)
+                {
+                    if (cmd is Movement)
+                    {
+                        var mvt = cmd as Movement;
+                        var htmlInsideFormat = "<li class='list-group-item inside-list-group-item' id='{0}'>{1}<span class='badge'><a class='glyphicon glyphicon-remove' href='javascript:DeleteProcessElement(\"{0}\")'></a></span></li>";
+                        var movementBuilder = new StringBuilder();
+                        movementBuilder.AppendFormat("<span class='badge'><a class='glyphicon glyphicon-arrow-down' href='javascript:DisplayMovementElement(\"{0}\")'></a></span><ul class='list-group inside-list-group' id='group-{0}'>", cmd.Id);
+                        foreach (var pos in mvt.Positions)
+                        {
+                            movementBuilder.AppendFormat(htmlInsideFormat, pos.Id, string.Concat("Point #", mvt.Positions.IndexOf(pos) + 1));
+                        }
+                        movementBuilder.Append("</ul>");
+                        processBuilder.AppendFormat(htmlFormat, cmd.Id, cmd.Name, movementBuilder.ToString());
+                    }
+                    else if (cmd is GripperAction)
+                    {
+                        processBuilder.AppendFormat(htmlFormat, cmd.Id, cmd.Name, string.Empty);
+                    }
+                }
+
+                return Json(processBuilder.ToString(), JsonRequestBehavior.AllowGet);
             }
             else
-            {
-                TrajectoryController.FermerPince();
-            }
-            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public ActionResult SaveProcess(string processName, bool newProcess = false)
+        public ActionResult SwitchCommand(string processName, Guid guidCmd1, Guid guidCmd2)
         {
-            if (!TrajectoryController.IsProcessExist(processName))
-            {
-                TrajectoryController.ResetListAndCounters();
-            }
-            TrajectoryController.SaveTrajectory(processName);
-            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+            var success = RobotProcessController.SwitchCommand(processName, guidCmd1, guidCmd2);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddCurrentPosition(string processName, Guid guidMovement)
+        {
+            var success = RobotProcessController.AddCurrentPosition(processName, guidMovement, MyRobot);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddGripperAction(string processName, bool open)
+        {
+            var success = RobotProcessController.AddGripperAction(processName, open ? GripperAction.Action.Open : GripperAction.Action.Close, MyRobot);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddMovement(string processName, string movementName)
+        {
+            var success = RobotProcessController.AddMovement(processName, movementName);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public ActionResult StartProcess(string processName)
         {
-            TrajectoryController.ExecuterTrajectoireEnregistree();
-            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+            var success = RobotProcessController.ExecuteProcess(MyRobot, processName, Logs);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
         public ActionResult IsProcessExist(string processName)
         {
-            return Json(new { Exist = TrajectoryController.IsProcessExist(processName) }, JsonRequestBehavior.AllowGet);
+            return Json(new { Exist = RobotProcessController.IsExistingProcess(processName) }, JsonRequestBehavior.AllowGet);
         }
-
+        
+        [HttpGet]
+        public ActionResult DeleteCommand(string processName, Guid guidCmd)
+        {
+            var success = RobotProcessController.DeleteCommand(processName, guidCmd);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
         #endregion
+
+
 
         #region Functions
         private void StartLearningLoop()
