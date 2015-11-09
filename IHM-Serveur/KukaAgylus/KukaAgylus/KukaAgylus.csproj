@@ -155,12 +155,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\plateau_calibration.png" />
     <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Content\images\plateau_calibration.png">
-      <BrowseToURL>~/Content/plateau_calibration.png</BrowseToURL>
-    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\jquery-ui.css" />

@@ -173,3 +173,8 @@ label {
 .h-39{
     height : 39px;
 }
+
+.processing_input_move {
+    margin-left: -15px; 
+    width: 110%;
+}
