@@ -130,13 +130,60 @@ namespace KukaAgylus.Controllers
         }
 
         [HttpGet]
+        public ActionResult SetRobotMode(string modeName)
+        {
+            bool success = (modeName == "Learning" || modeName == "Processing") && MvcApplication.RobotInfos.IsConnected;
+            if (success)
+            {
+                MvcApplication.RobotInfos.Mode = modeName;
+                Logs.AddLog("info", string.Format("Change robot mode to \"{0}\" mode", modeName));
+
+                if (modeName == "Learning")
+                {
+                    StopLearningLoop();
+                    StartLearningLoop();
+                }
+                else StopLearningLoop();
+            }
+            else
+            {
+                Logs.AddLog("error", "In change robot mode: Invalid operation");
+            }
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult SetMouseTreshold(double treshold)
+        {
+            Logs.AddLog("info", string.Format("Settings changed: Treshold = {0}", treshold));
+            MouseInfos.Treshold = treshold;
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult SetTranslationVelocity(double velocity)
+        {
+            Logs.AddLog("info", string.Format("Settings changed: Translation velocity = {0}", velocity));
+            MouseInfos.TranslationVelocity = velocity;
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult SetRotationVelocity(double velocity)
+        {
+            Logs.AddLog("info", string.Format("Settings changed: Rotation velocity = {0}", velocity));
+            MouseInfos.RotationVelocity = velocity;
+            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
+        }
+        /*
+        [HttpGet]
         public ActionResult ApplyRobotSettings(string mode, double? velocity)
         {
             bool success = (mode == "Learning" || mode == "Processing") && MvcApplication.RobotInfos.IsConnected;
             if (success && velocity != null)
             {
                 MvcApplication.RobotInfos.Velocity = velocity.Value;
-                MouseInfos.Velocity = velocity.Value;
+                MouseInfos.TranslationVelocity = velocity.Value;
             }
             if (success)
             {
@@ -158,13 +205,7 @@ namespace KukaAgylus.Controllers
 
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
-
-        [HttpGet]
-        public ActionResult SetMouseTreshold(double treshold)
-        {
-            MouseInfos.Treshold = treshold;
-            return Json(new { Success = true }, JsonRequestBehavior.AllowGet);
-        }
+        */
         #endregion
 
         #region Process Management
@@ -214,6 +255,7 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult SwitchCommand(string processName, Guid guidCmd1, Guid guidCmd2)
         {
+            
             var success = RobotProcessController.SwitchCommand(processName, guidCmd1, guidCmd2);
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
@@ -242,7 +284,7 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult StartProcess(string processName)
         {
-            var success = RobotProcessController.ExecuteProcess(MyRobot, processName, Logs);
+            var success = RobotProcessController.ExecuteProcess(MyRobot, processName, MvcApplication.LoadedTray ,Logs);
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
 
@@ -251,7 +293,7 @@ namespace KukaAgylus.Controllers
         {
             return Json(new { Exist = RobotProcessController.IsExistingProcess(processName) }, JsonRequestBehavior.AllowGet);
         }
-        
+
         [HttpGet]
         public ActionResult DeleteCommand(string processName, Guid guidCmd)
         {

@@ -172,22 +172,33 @@ namespace Robot
 
 
                 temp.Clear();
-                Console.Write("on descend");
+                Console.WriteLine("on descend");
                 emplacement.point.Z += -70;
                 temp.Add(emplacement.point);
                 robot.PlayTrajectory(temp);
 
                 robot.OpenGripper();
                 temp.Clear();
-                Console.Write("on remonte");
+                Console.WriteLine("on remonte");
                 emplacement.point.Z += 200;
                 temp.Add(emplacement.point);
                 robot.PlayTrajectory(temp);
                 Console.Write("X:" + robot.GetCurrentPosition().X + " Y:" + robot.GetCurrentPosition().Y + " Z:" + robot.GetCurrentPosition().Z + " A:" + robot.GetCurrentPosition().A + " B:" + robot.GetCurrentPosition().B + " C:" + robot.GetCurrentPosition().C);
 
 
+<<<<<<< HEAD
                 Console.Write("sleep");
                 
+=======
+                Console.WriteLine("sleep");
+                /*
+                // Relève la pince. Modification
+                robot.StartRelativeMovement();
+                Thread.Sleep(1000);
+                monPoint.Z = 230.0;
+                robot.SetRelativeMovement(monPoint);
+                robot.StopRelativeMovement();*/
+>>>>>>> 2c3f86322119954debac5a2899fc21da48c73123
 
             }
         }

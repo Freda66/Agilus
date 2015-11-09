@@ -116,6 +116,26 @@ namespace KukaAgylus.Models
         public Action Command { get; set; }
     }
 
+    public class TrayAction : IRobotCommand
+    {
+        /// <summary>
+        /// Actions possible possible sur le plateau
+        /// </summary>
+        public enum Action { Depose, Withdraw }
+        /// <summary>
+        /// Id de l'action
+        /// </summary>
+        public Guid Id { get; set; } = Guid.NewGuid();
+        /// <summary>
+        /// Nom de l'action
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// Action à effectuer
+        /// </summary>
+        public Action Command { get; set; }
+    }
+
     /// <summary>
     /// Représente un processus d'éxécution du robot
     /// </summary>
@@ -407,21 +427,26 @@ namespace KukaAgylus.Models
             }
         }
 
+        public static bool ExecuteProcess(RobotController robot, string processName, Tray tray = null, LogManager log = null)
+        {
+            var process = new RobotProcess(processName);
+            return ExecuteProcess(robot, process.Commands, tray, log);
+        }
+
         /// <summary>
         /// Permet de démarrer l'éxécution d'un processus sur un robot
         /// </summary>
         /// <param name="robot">Robot éxécutant le processus</param>
         /// <param name="process">Processus à éxécuter</param>
         /// <returns>Indicateur de succès d'éxécution</returns>
-        public static bool ExecuteProcess(RobotController robot, string processName, LogManager log = null)
+        public static bool ExecuteProcess(RobotController robot, List<IRobotCommand> commands, Tray tray = null, LogManager log = null)
         {
-            var process = new RobotProcess(processName);
             try
             {
                 //Arrêt des mouvements relatifs du robot
                 robot.StopRelativeMovement();
                 // Parcours et éxécution des commandes
-                foreach (var command in process.Commands)
+                foreach (var command in commands)
                 {
                     if (command is Movement)
                     {
@@ -447,6 +472,23 @@ namespace KukaAgylus.Models
                             //Fermeture pince
                             robot.CloseGripper();
                             if (log != null) log.AddLog("Info", "Close gripper");
+                        }
+                    }
+                    else if (command is TrayAction)
+                    {
+                        var action = command as TrayAction;
+
+                        if (log != null) log.AddLog("Info", action.Command == TrayAction.Action.Depose ? "Deposing item on Tray ..." : "Withdrawing item on Tray ...");
+
+                        if (tray != null)
+                        {
+                            // Execution des commandes plateau
+                            var commandsTray = tray.GetRobotCommand(action.Command == TrayAction.Action.Withdraw);
+                            ExecuteProcess(robot, commandsTray, tray, log);
+                        }
+                        else
+                        {
+                            if (log != null) log.AddLog("Error", "Tray not calibrated...");
                         }
                     }
                     else

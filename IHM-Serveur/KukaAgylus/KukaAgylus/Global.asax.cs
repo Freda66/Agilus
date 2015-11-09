@@ -21,17 +21,25 @@ namespace KukaAgylus
         public static RobotController MyRobot = new RobotController();
         public static RobotInfos RobotInfos = new RobotInfos();
 
+        public static Tray LoadedTray = new Tray();
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            TestSaveTray();
         }
 
         protected void Session_Start(object sender, EventArgs e)
         {
             Logs.AddLog("info", "New user connected");
+        }
+
+        private void TestSaveTray()
+        {
+            LoadedTray.SaveTrayCalibration();
         }
 
         private void TestLoadProcess()
