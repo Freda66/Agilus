@@ -284,7 +284,7 @@ namespace KukaAgylus.Controllers
         [HttpGet]
         public ActionResult StartProcess(string processName)
         {
-            var success = RobotProcessController.ExecuteProcess(MyRobot, processName, Logs);
+            var success = RobotProcessController.ExecuteProcess(MyRobot, processName, MvcApplication.LoadedTray ,Logs);
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
 
