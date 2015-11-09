@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLX.Robot.Kuka.Controller;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,15 @@ namespace KukaAgylus.Models
      *              
      *              KUKA
      * */
+
+    public class CalibrationInfos
+    {
+        public CartesianPosition PointA { get; set; }
+        public CartesianPosition PointB { get; set; }
+        public CartesianPosition PointC { get; set; }
+        public int RowsCount { get; set; }
+        public int ColsCount { get; set; }
+    }
 
     public class Tray
     {
@@ -69,6 +79,27 @@ namespace KukaAgylus.Models
             ResetLocations();
         }
 
+        private CalibrationInfos GetCalibrationInfos()
+        {
+            return new CalibrationInfos()
+            {
+                PointA = this.PointA,
+                PointB = this.PointB,
+                PointC = this.PointC,
+                RowsCount = this.RowsCount,
+                ColsCount = this.ColsCount
+            };
+        }
+        private void LoadCalibrationInfos(CalibrationInfos infos)
+        {
+            this.PointA = infos.PointA;
+            this.PointB = infos.PointB;
+            this.PointC = infos.PointC;
+            this.RowsCount = infos.RowsCount;
+            this.ColsCount = infos.ColsCount;
+        }
+
+
         /// <summary>
         /// Initialise la liste des Locations du plateau
         /// </summary>
@@ -110,19 +141,37 @@ namespace KukaAgylus.Models
 
         private Location GetFirstBusyLocation()
         {
-            var locationsBusy = from loc in Locations
-                                where loc.IsBusy
-                                select loc;
-            if (locationsBusy.Count() > 0) return locationsBusy.First();
+            var locationsBusy = new List<Location>();
+            foreach (var loc in Locations)
+            {
+                if (loc.IsBusy)
+                    locationsBusy.Add(loc);
+            }
+            if (locationsBusy.Count() > 0)
+            {
+                locationsBusy.First().IsBusy = false;
+                return locationsBusy.First();
+            }
             else return null;
         }
 
         private Location GetFirstEmptyLocation()
-        {
+        { 
+            var locationsEmpty = new List<Location>();
+            foreach(var loc in Locations)
+            {
+                if (!loc.IsBusy)
+                    locationsEmpty.Add(loc);
+            }
+            /*
             var locationsEmpty = from loc in Locations
                                  where !loc.IsBusy
-                                 select loc;
-            if (locationsEmpty.Count() > 0) return locationsEmpty.First();
+                                 select loc;*/
+            if (locationsEmpty.Count() > 0)
+            {
+                locationsEmpty.First().IsBusy = true;
+                return locationsEmpty.First();
+            }
             else return null;
         }
 
@@ -200,14 +249,15 @@ namespace KukaAgylus.Models
             if (Directory.Exists(Environment.CurrentDirectory + @"\tray")
                 && File.Exists(Environment.CurrentDirectory + @"\tray\tray_calib.json"))
             {
-                // Si le process existe on le charge
-                string json = File.ReadAllText(Environment.CurrentDirectory + @"\tray\tray_calib.json");
-                var calibPositions = JsonConvert.DeserializeObject<List<CartesianPosition>>(json);
-                if (calibPositions.Count() == 3)
+                try
                 {
-                    this.PointA = calibPositions[0];
-                    this.PointB = calibPositions[1];
-                    this.PointC = calibPositions[2];
+                    string json = File.ReadAllText(Environment.CurrentDirectory + @"\tray\tray_calib.json");
+                    var calib = JsonConvert.DeserializeObject<CalibrationInfos>(json);
+                    LoadCalibrationInfos(calib);
+                }
+                catch (Exception ex)
+                {
+
                 }
             }
         }
@@ -223,7 +273,7 @@ namespace KukaAgylus.Models
                 PointC
             };
             // Sauvegarde du process
-            File.WriteAllText(Environment.CurrentDirectory + @"\tray\tray_calib.json", JsonConvert.SerializeObject(calibPositions), Encoding.UTF8);
+            File.WriteAllText(Environment.CurrentDirectory + @"\tray\tray_calib.json", JsonConvert.SerializeObject(GetCalibrationInfos()), Encoding.UTF8);
         }
     }
 }

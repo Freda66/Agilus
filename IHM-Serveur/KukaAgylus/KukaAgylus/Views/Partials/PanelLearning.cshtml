@@ -55,6 +55,16 @@
                     <button type="button" class="btn btn-default" id="btn-calib-plateau">Tray calibration</button>
                 </div>
             </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" onclick="BtnAddDeposeTrayClick()">Tray depose</button>
+                </div>
+            </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" onclick="BtnAddWithdrawTrayClick()">Tray withdraw</button>
+                </div>
+            </div>
         </div>
     </row>
 </div>
@@ -63,7 +73,29 @@
 
 <script>
 
+    function CallAddTrayAction(processName, isWithdraw) {
+        $.ajax({
+            url: "/Home/AddTrayAction",
+            type: "get",
+            data: { processName: processName, isWithdraw: isWithdraw },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
 
+    function BtnAddWithdrawTrayClick()
+    {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddTrayAction(processName, true);
+    }
+
+    function BtnAddDeposeTrayClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddTrayAction(processName, false);
+    }
 
     var guidSelectedMovement = "";
     function DisplayMovementElement(movementId) {

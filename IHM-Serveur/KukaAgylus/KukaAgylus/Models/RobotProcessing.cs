@@ -378,6 +378,18 @@ namespace KukaAgylus.Models
             }
         }
 
+        public static bool AddTrayAction(string processName, TrayAction.Action action, RobotController robot)
+        {
+            var process = new RobotProcess(processName);
+            process.Commands.Add(new TrayAction()
+            {
+                Name = action == TrayAction.Action.Depose ? "Depose item" : "Withdraw item",
+                Command = action
+            });
+            process.SaveProcess();
+            return true;
+        }
+
         /// <summary>
         /// Supprime une commande d'un processus
         /// </summary>

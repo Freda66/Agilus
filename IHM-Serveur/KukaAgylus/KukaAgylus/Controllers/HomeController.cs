@@ -244,6 +244,10 @@ namespace KukaAgylus.Controllers
                     {
                         processBuilder.AppendFormat(htmlFormat, cmd.Id, cmd.Name, string.Empty);
                     }
+                    else if (cmd is TrayAction)
+                    {
+                        processBuilder.AppendFormat(htmlFormat, cmd.Id, cmd.Name, string.Empty);
+                    }
                 }
 
                 return Json(processBuilder.ToString(), JsonRequestBehavior.AllowGet);
@@ -278,6 +282,13 @@ namespace KukaAgylus.Controllers
         public ActionResult AddMovement(string processName, string movementName)
         {
             var success = RobotProcessController.AddMovement(processName, movementName);
+            return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult AddTrayAction(string processName, bool isWithdraw)
+        {
+            var success = RobotProcessController.AddTrayAction(processName, isWithdraw ? TrayAction.Action.Withdraw : TrayAction.Action.Depose, MyRobot);
             return Json(new { Success = success }, JsonRequestBehavior.AllowGet);
         }
 
