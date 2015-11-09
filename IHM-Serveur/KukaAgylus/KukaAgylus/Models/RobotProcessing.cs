@@ -428,7 +428,7 @@ namespace KukaAgylus.Models
                         // Commande de mouvement
                         var mvt = command as Movement;
                         //Envoie de la liste de positions au robot
-                        if (log != null) log.AddLog("Info", string.Format("Movement start : {0} waypoints" + mvt.Positions.Count()));
+                        if (log != null) log.AddLog("Info", string.Format("Movement start : {0} waypoints", mvt.Positions.Count()));
                         robot.PlayTrajectory(mvt.GetCartesianPositions());
                         if (log != null) log.AddLog("Info", "Movement end");
                     }
