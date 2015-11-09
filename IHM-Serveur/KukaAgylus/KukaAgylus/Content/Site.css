@@ -72,9 +72,11 @@ label {
 .margin-top-20 {
     margin-top: 20px;
 }
+
 .margin-top-15 {
     margin-top: 15px;
 }
+
 .margin-top-10 {
     margin-top: 10px;
 }
@@ -108,32 +110,66 @@ label {
     border-right: 1px solid rgba(0, 0, 0, 0.2);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
-#btn-display-tips:hover {
-    background-image: -webkit-linear-gradient(#020202, #101112 40%, #191b1d);
-    background-image: -o-linear-gradient(#020202, #101112 40%, #191b1d);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#020202), color-stop(40%, #101112), to(#191b1d));
-    background-image: linear-gradient(#020202, #101112 40%, #191b1d);
-    background-repeat: no-repeat;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff020202', endColorstr='#ff191b1d', GradientType=0);
-    -webkit-filter: none;
-    filter: none;
-    border-left-color: transparent;
-}
+
+    #btn-display-tips:hover {
+        background-image: -webkit-linear-gradient(#020202, #101112 40%, #191b1d);
+        background-image: -o-linear-gradient(#020202, #101112 40%, #191b1d);
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#020202), color-stop(40%, #101112), to(#191b1d));
+        background-image: linear-gradient(#020202, #101112 40%, #191b1d);
+        background-repeat: no-repeat;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff020202', endColorstr='#ff191b1d', GradientType=0);
+        -webkit-filter: none;
+        filter: none;
+        border-left-color: transparent;
+    }
 
 [draggable] {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  /* Required to make elements draggable in old WebKit */
-  -khtml-user-drag: element;
-  -webkit-user-drag: element;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
 }
 
 .drag-item {
     cursor: move;
 }
 
-.drag-item.over {
-  border: 2px dashed #000;
+    .drag-item.over {
+        border: 2px dashed #000;
+    }
+
+.inside-list-group {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.inside-list-group-item {
+    background-color: #1c1e22;
+    color: #c8c8c8;
+}
+
+.selected {
+    border-style: dashed;
+    border-width: medium;
+}
+
+.ui-dialog-titlebar {
+    display: none;
+}
+
+
+#modal-calibration-plateau {
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    color: #c8c8c8;
+    background-color: #272b30;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    font-weight: normal !important;
+}
+
+.h-39{
+    height : 39px;
 }

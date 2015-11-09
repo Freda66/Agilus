@@ -28,7 +28,13 @@ namespace DaemonMouse
             {
                 Console.WriteLine("Mouse connection failed !: ", ex.Data);
             }
-
+            var oldX = 0.0;
+            var oldY = 0.0;
+            var oldZ = 0.0;
+            var oldRX = 0.0;
+            var oldRY = 0.0;
+            var oldRZ = 0.0;
+            var oldAngle = 0.0;
             while (connect)
             {
                 var translation = device.Sensor.Translation;
@@ -36,17 +42,28 @@ namespace DaemonMouse
 
                 try
                 {
-                    ServiceMouse.MouseSoapClient service = new ServiceMouse.MouseSoapClient();
+                    if (oldX != translation.X || oldY != translation.Y || oldZ != translation.Z || oldRX != rotation.X || oldRY != rotation.Y || oldRZ != rotation.Z || oldAngle != rotation.Angle)
+                    {
+                        ServiceMouse.MouseSoapClient service = new ServiceMouse.MouseSoapClient();
 
-                    Console.WriteLine("Translation : {0}\r\nRotation : {1}",
-                        string.Format("X={0} Y={1} Z={2}", translation.X, translation.Y, translation.Z),
-                        string.Format("X={0} Y={1} Z={2} Angle={3}", rotation.X, rotation.Y, rotation.Z, rotation.Angle));
+                        Console.WriteLine("Translation : {0}\r\nRotation : {1}",
+                            string.Format("X={0} Y={1} Z={2}", translation.X, translation.Y, translation.Z),
+                            string.Format("X={0} Y={1} Z={2} Angle={3}", rotation.X, rotation.Y, rotation.Z, rotation.Angle));
 
-                    service.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z, rotation.Angle);
+                        service.SendMousePosition(translation.X, translation.Y, translation.Z, rotation.X, rotation.Y, rotation.Z, rotation.Angle);
+                    }
                 }
                 catch (Exception e) { Console.WriteLine(e.Data); }
 
-                Thread.Sleep(50);
+                oldX = translation.X;
+                oldY = translation.Y;
+                oldZ = translation.Z;
+                oldRX = rotation.X;
+                oldRY = rotation.Y;
+                oldRZ = rotation.Z;
+                oldAngle = rotation.Angle;
+
+                Thread.Sleep(150);
             }
 
             Console.WriteLine("Daemon mouse closed !");
