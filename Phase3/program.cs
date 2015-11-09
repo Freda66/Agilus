@@ -72,9 +72,10 @@ namespace Robot
 
         private void AllerAuMagasin()
         {
+            robot.OpenGripper();
             NLX.Robot.Kuka.Controller.CartesianPosition pts2 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
-            // Saisie de la pièce
+           
             pts2.X = 503.16;
             pts2.Y = 174.39;
             pts2.Z = 219.45;
@@ -86,9 +87,6 @@ namespace Robot
             Console.WriteLine("pts 2");
 
             robot.PlayTrajectory(liste_aller_magasin);
-
-            
-            
         }
 
         private void PrendrePiece()
@@ -157,8 +155,8 @@ namespace Robot
 
             if (!emplacement.isBusy)
             {
-                AllerAuMagasin();
-                PrendrePiece();
+               
+                
 
 
                 temp.Clear();
@@ -166,32 +164,55 @@ namespace Robot
                 temp.Add(emplacement.point);
 
                 robot.PlayTrajectory(temp);
-                Thread.Sleep(5000);
+                Thread.Sleep(4000);
 
+
+                temp.Clear();
+                Console.Write("on descend");
+                emplacement.point.Z += -70;
+                temp.Add(emplacement.point);
+                robot.PlayTrajectory(temp);
+
+                robot.OpenGripper();
+                temp.Clear();
+                Console.Write("on remonte");
+                emplacement.point.Z += 200;
+                temp.Add(emplacement.point);
+                robot.PlayTrajectory(temp);
+                /*
                 robot.StartRelativeMovement();
-                Thread.Sleep(2000);
-
                 CartesianPosition monPoint = new CartesianPosition();
                 monPoint.X = 0.0;
                 monPoint.Y = 0.0;
-                monPoint.Z = -20.0;
+                monPoint.Z = -40.0;
+               
                 robot.SetRelativeMovement(monPoint);
                 robot.StopRelativeMovement();
-                Thread.Sleep(500);
+                
+                
+                Thread.Sleep(2000);
+                Console.Write("open gripper");
                 robot.OpenGripper();
 
+                monPoint = new CartesianPosition();
+                monPoint.X = 0.0;
+                monPoint.Y = 0.0;
+                monPoint.Z = 230.0;
+                robot.StartRelativeMovement();
+                Thread.Sleep(1000);
+                Console.Write("on monte");
+                robot.SetRelativeMovement(monPoint);
+                robot.StopRelativeMovement();
+                Thread.Sleep(3000);*/
+
+                Console.Write("sleep");
+                /*
+                // Relève la pince. Modification
                 robot.StartRelativeMovement();
                 Thread.Sleep(1000);
                 monPoint.Z = 230.0;
                 robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();
-
-                // Relève la pince. Modification
-                robot.StartRelativeMovement();
-                Thread.Sleep(1000);
-                monPoint.Z = 530.0;
-                robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();
+                robot.StopRelativeMovement();*/
 
             }
         }
@@ -219,7 +240,7 @@ namespace Robot
         {
             robot = new RobotController();
             robot.Connect(adresseIP);
-
+           
             // Création d'un thread pour éviter que le garbage collector tue le processus à n'importe quel moment
             mouseTask = System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
