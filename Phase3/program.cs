@@ -91,6 +91,8 @@ namespace Robot
 
         private void PrendrePiece()
         {
+            liste_aller_plateau.Clear();
+
             NLX.Robot.Kuka.Controller.CartesianPosition pts3 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
             // Pièce saisie
@@ -101,7 +103,7 @@ namespace Robot
             pts3.A = 73.61;
             pts3.B = -86.54;
             pts3.C = -158.52;
-
+            Console.WriteLine("pts 3");
             //A rotation autour de Z
             //B rotation autour de Y
             //C rotation autour de X
@@ -110,7 +112,7 @@ namespace Robot
             robot.PlayTrajectory(liste_aller_plateau);// On saisie et on prend la pièce
 
             liste_aller_plateau.Clear();// On a fais le mouvement on peut vider la liste
-
+            Console.WriteLine("close gripper");
             robot.CloseGripper();
             NLX.Robot.Kuka.Controller.CartesianPosition pts4 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
@@ -122,9 +124,9 @@ namespace Robot
             pts4.A = 73.61;
             pts4.B = -86.54;
             pts4.C = -158.52;
-
-            liste_aller_plateau.Add(pts4);
             Console.WriteLine("pts 4");
+            liste_aller_plateau.Add(pts4);
+           
 
             NLX.Robot.Kuka.Controller.CartesianPosition pts5 = new NLX.Robot.Kuka.Controller.CartesianPosition();
 
@@ -140,6 +142,8 @@ namespace Robot
             Console.WriteLine("pts 5");
 
             robot.PlayTrajectory(liste_aller_plateau);
+
+            Console.WriteLine("fin prendre piece");
         }
 
        
@@ -164,7 +168,7 @@ namespace Robot
                 temp.Add(emplacement.point);
 
                 robot.PlayTrajectory(temp);
-                Thread.Sleep(4000);
+                Thread.Sleep(500);
 
 
                 temp.Clear();
@@ -179,40 +183,11 @@ namespace Robot
                 emplacement.point.Z += 200;
                 temp.Add(emplacement.point);
                 robot.PlayTrajectory(temp);
-                /*
-                robot.StartRelativeMovement();
-                CartesianPosition monPoint = new CartesianPosition();
-                monPoint.X = 0.0;
-                monPoint.Y = 0.0;
-                monPoint.Z = -40.0;
-               
-                robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();
-                
-                
-                Thread.Sleep(2000);
-                Console.Write("open gripper");
-                robot.OpenGripper();
+                Console.Write("X:" + robot.GetCurrentPosition().X + " Y:" + robot.GetCurrentPosition().Y + " Z:" + robot.GetCurrentPosition().Z + " A:" + robot.GetCurrentPosition().A + " B:" + robot.GetCurrentPosition().B + " C:" + robot.GetCurrentPosition().C);
 
-                monPoint = new CartesianPosition();
-                monPoint.X = 0.0;
-                monPoint.Y = 0.0;
-                monPoint.Z = 230.0;
-                robot.StartRelativeMovement();
-                Thread.Sleep(1000);
-                Console.Write("on monte");
-                robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();
-                Thread.Sleep(3000);*/
 
                 Console.Write("sleep");
-                /*
-                // Relève la pince. Modification
-                robot.StartRelativeMovement();
-                Thread.Sleep(1000);
-                monPoint.Z = 230.0;
-                robot.SetRelativeMovement(monPoint);
-                robot.StopRelativeMovement();*/
+                
 
             }
         }
@@ -348,7 +323,15 @@ namespace Robot
             return true;
         }
 
-
+        private void Test()
+        {
+            goToIJPosition(0, 0);
+            Thread.Sleep(5000);
+            goToIJPosition(3, 0);
+            Thread.Sleep(5000);
+            goToIJPosition(0, 3);
+            Thread.Sleep(5000);
+        }
         static void Main(string[] args)
         {
             RobotActions robot = new RobotActions();
@@ -392,6 +375,11 @@ namespace Robot
                 if (key.Key == ConsoleKey.A)
                 {
                     robot.OuvrirPince();
+                }
+
+                if (key.Key == ConsoleKey.B)
+                {
+                    robot.Test();
                 }
 
                 //ferme la pince
