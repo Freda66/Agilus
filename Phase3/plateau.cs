@@ -13,12 +13,12 @@ namespace ConsoleApplication1
         private const int NBCOLONNESPLATEAU = 4;    // Nombre de colonnes du plateau
         private const double XD = 935.37;           // Dernière position
         private const double YD = -267.96;          // 
-        private const double XB = 678.63;           // Origine
-        private const double YB = -289.64;          //
-        private const double XA = 775.02;           //
-        private const double YA = -405.31;          //
-        private const double XC = 839.75;           //
-        private const double YC = -154.96;          //
+        private const double XB = 678.01;           // Origine
+        private const double YB = -287.40;          //
+        private const double XA = 774.88;           //
+        private const double YA = -402.58;          //
+        private const double XC = 838.45;           //
+        private const double YC = -152.09;          //
 
         /*  D   O   O   A
          *  O   O   O   O
@@ -54,6 +54,8 @@ namespace ConsoleApplication1
             this.init();
         }
 
+
+       
         private void init()
         {
             // Parcours du plateau
@@ -87,6 +89,8 @@ namespace ConsoleApplication1
                         Console.WriteLine("Emplacement(" + i + "," + j + ") => X: " + posx + "  Y: " + posy);
                     }
                 }
+
+            this.plateau.Reverse();
         }
     }
 }
