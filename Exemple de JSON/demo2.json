@@ -1,0 +1,232 @@
+﻿[{
+	"$type": "KukaAgylus.Models.GripperAction, KukaAgylus",
+	"Id": "bb13ae01-bc03-43fb-9422-3706b3fafb31",
+	"Name": "Open gripper",
+	"Command": 0
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "72441be8-578f-4897-9a23-784f67496a1b",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 520.27,
+			"Y": 184.45,
+			"Z": 216.97,
+			"A": -100.78,
+			"B": 87.37,
+			"C": 165.20
+		}
+	},
+	{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "5fb6729c-9cc3-484a-965b-767e279bbc05",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 520.27,
+			"Y": 229.93,
+			"Z": 216.97,
+			"A": -100.78,
+			"B": 87.37,
+			"C": 165.20
+		}
+	}],
+	"Name": "Take item",
+	"Id": "ff00304a-d279-4525-b425-2e1793cbed6f"
+},
+{
+	"$type": "KukaAgylus.Models.GripperAction, KukaAgylus",
+	"Id": "ff48fe5c-07e2-4bf7-82fb-613cb42b3958",
+	"Name": "Close gripper",
+	"Command": 1
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "477abf8a-ffc2-4544-9503-713cfcaa2f72",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 520.27,
+			"Y": 229.93,
+			"Z": 281.18,
+			"A": -100.78,
+			"B": 87.37,
+			"C": 165.20
+		}
+	}],
+	"Name": "Back",
+	"Id": "c43bd426-2da8-492e-8d46-22b278dad621"
+},
+{
+	"$type": "KukaAgylus.Models.TrayAction, KukaAgylus",
+	"Id": "e262e3d7-e83e-4c7f-8ae0-78fee0cc408b",
+	"Name": "Depose item",
+	"Command": 0
+},
+{
+	"$type": "KukaAgylus.Models.GripperAction, KukaAgylus",
+	"Id": "7a48341f-a09e-4361-9205-a33ade55bdbe",
+	"Name": "Open gripper",
+	"Command": 0
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "ca152fb0-28b3-4782-97c0-2b8792b0175c",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 520.27,
+			"Y": 184.45,
+			"Z": 216.97,
+			"A": -100.78,
+			"B": 87.37,
+			"C": 165.20
+		}
+	},
+	{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "7b669ddf-9ebe-4869-bbd7-ab0e27dcd7fb",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 520.27,
+			"Y": 229.93,
+			"Z": 216.97,
+			"A": -100.78,
+			"B": 87.37,
+			"C": 165.20
+		}
+	}],
+	"Name": "Take item",
+	"Id": "36627aa1-08f6-4f27-bc4a-b4864f477e69"
+},
+{
+	"$type": "KukaAgylus.Models.GripperAction, KukaAgylus",
+	"Id": "088d07f9-c055-43bf-8d2e-5e7f0b7c3b1b",
+	"Name": "Close gripper",
+	"Command": 1
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "a48dcaed-9e0c-492f-b33e-aa22e5a68543",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 520.27,
+			"Y": 229.93,
+			"Z": 281.18,
+			"A": -100.78,
+			"B": 87.37,
+			"C": 165.20
+		}
+	}],
+	"Name": "Back",
+	"Id": "af3ab392-cc0c-4f02-9cfd-c2470afd5ee4"
+},
+{
+	"$type": "KukaAgylus.Models.TrayAction, KukaAgylus",
+	"Id": "745bc24a-1111-463c-91ba-1088925e7547",
+	"Name": "Depose item",
+	"Command": 0
+},
+{
+	"$type": "KukaAgylus.Models.TrayAction, KukaAgylus",
+	"Id": "5ef9818f-08c2-46f4-8b0e-9b1cc487a1d3",
+	"Name": "Withdraw item",
+	"Command": 1
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "084f41d5-f8d5-47d2-a845-eae524d43c96",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 476.15,
+			"Y": 631.65,
+			"Z": 347.18,
+			"A": -83.63,
+			"B": 7.83,
+			"C": -178.08
+		}
+	},
+	{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "da0b30fd-2c4b-41be-b16b-3e80aa49f47c",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 476.15,
+			"Y": 626.66,
+			"Z": 306.03,
+			"A": -83.63,
+			"B": 7.83,
+			"C": -178.08
+		}
+	}],
+	"Name": "Restock item",
+	"Id": "80a418e3-ccb7-4173-9740-e3c560bc4a59"
+},
+{
+	"$type": "KukaAgylus.Models.GripperAction, KukaAgylus",
+	"Id": "29e7a4cb-a4b4-4291-b5dc-fbde41bb968c",
+	"Name": "Open gripper",
+	"Command": 0
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "068f6670-8e84-4898-9444-86f7013f6f20",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 476.15,
+			"Y": 631.65,
+			"Z": 347.18,
+			"A": -83.63,
+			"B": 7.83,
+			"C": -178.08
+		}
+	}],
+	"Name": "Back restock",
+	"Id": "5c9a2c07-dc6e-43a3-aeba-131e60eabd80"
+},
+{
+	"$type": "KukaAgylus.Models.TrayAction, KukaAgylus",
+	"Id": "6bb145a5-5d31-452f-8978-2dd7f60d2a1c",
+	"Name": "Withdraw item",
+	"Command": 1
+},
+{
+	"$type": "KukaAgylus.Models.Movement, KukaAgylus",
+	"Positions": [{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "a8adb77d-c7c4-4bef-b58f-7b4318a4711e",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 476.15,
+			"Y": 631.65,
+			"Z": 347.18,
+			"A": -83.63,
+			"B": 7.83,
+			"C": -178.08
+		}
+	},
+	{
+		"$type": "KukaAgylus.Models.RobotPosition, KukaAgylus",
+		"Id": "c90105b0-3ce2-4547-bc87-f43d574d9348",
+		"Position": {
+			"$type": "NLX.Robot.Kuka.Controller.CartesianPosition, nlx.robot.kuka.controller",
+			"X": 476.15,
+			"Y": 626.66,
+			"Z": 306.03,
+			"A": -83.63,
+			"B": 7.83,
+			"C": -178.08
+		}
+	}],
+	"Name": "Restock item",
+	"Id": "01355dec-fa1f-4bdc-8330-af2419cf6d54"
+}]
