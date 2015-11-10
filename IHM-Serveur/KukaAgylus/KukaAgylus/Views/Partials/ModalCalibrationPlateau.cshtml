@@ -1,0 +1,57 @@
+﻿
+<div id="modal-calibration-plateau" title="Tray Calibration" hidden="hidden">
+    <div class="col-lg-12">
+        <h2>Plateau calibration</h2>
+        <p class="tips">Description here</p>
+    </div>
+    <div class="col-lg-12" align="center">
+        <img src="~/Content/images/plateau_calibration.png"/>
+    </div>
+    <div class="margin-top-20">
+        <row align="center">
+            <div class="col-md-6 col-md-offset-3 margin-top-20" align="center">
+                <div class="btn-group" role="group" align="center">
+                    <button type="button" class="btn btn-default" id="btn-calib-plateau-pointA">Calibrate point A</button>
+                    <span class="input-group-addon status-ko h-39">KO</span>
+                </div>
+            </div>
+        </row>
+        <row>
+            <div class="col-md-6 col-md-offset-3 margin-top-15" align="center">
+                <div class="btn-group" role="group" align="center">
+                    <button type="button" class="btn btn-default" id="btn-calib-plateau-pointB">Calibrate point B</button>
+                    <span class="input-group-addon status-ko h-39">KO</span>
+                </div>
+            </div>
+        </row>
+        <row>
+            <div class="col-md-6 col-md-offset-3 margin-top-15" align="center">
+                <div class="btn-group" role="group" align="center">
+                    <button type="button" class="btn btn-default" id="btn-calib-plateau-pointC">Calibrate point C</button>
+                    <span class="input-group-addon status-ko h-39">KO</span>
+                </div>
+            </div>
+        </row>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#modal-calibration-plateau").dialog({
+            autoOpen: false,
+            modal: true,
+            draggable: false,
+            resizable: false,
+            height: 500,
+            width: 550,
+        });
+
+        $("#btn-calib-plateau").click(function () {
+            $("#modal-calibration-plateau").dialog('open');
+            $(".ui-widget-overlay").click(function () {
+                $("#modal-calibration-plateau").dialog('close');
+            });
+        });
+    });
+
+</script>

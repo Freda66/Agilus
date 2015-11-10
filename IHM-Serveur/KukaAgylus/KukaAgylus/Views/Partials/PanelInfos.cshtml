@@ -1,0 +1,51 @@
+﻿<div class="panel-infos">
+    <h1>Informations</h1>
+
+    <div class="row">
+        <div class="col-md-5">
+            <h3>Mouse 6D</h3>
+            <div id="mouse-infos"></div>
+        </div>
+        <div class="col-md-5">
+            <h3>Agilus</h3>
+            <div id="rob-infos"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var timerRobotInfo, timerMouseInfo;
+    function UpdateRobInfos() {
+        clearTimeout(timerRobotInfo);
+        $.ajax({
+            url: "/Home/GetRobotInfos",
+            type: "get",
+            success: function (response, textStatus, jqXHR) {
+                $('#rob-infos').empty();
+                $('#rob-infos').append(response);
+                timerRobotInfo = setTimeout("UpdateRobInfos()", 2000);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                clearTimeout(timerRobotInfo);
+            }
+        });
+    }
+    function UpdateMouseInfos() {
+        clearTimeout(timerMouseInfo);
+        $.ajax({
+            url: "/Home/GetMouseInfos",
+            type: "get",
+            success: function (response, textStatus, jqXHR) {
+                $('#mouse-infos').empty();
+                $('#mouse-infos').append(response);
+                timerMouseInfo = setTimeout("UpdateMouseInfos()", 2000);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                clearTimeout(timerMouseInfo);
+            }
+        });
+    }
+    UpdateRobInfos();
+    UpdateMouseInfos();
+</script>

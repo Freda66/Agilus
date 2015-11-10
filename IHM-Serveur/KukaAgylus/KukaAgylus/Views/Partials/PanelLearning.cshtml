@@ -1,0 +1,393 @@
+﻿<div class="col-lg-12">
+    <row>
+        <div class="col-md-12">
+            <h2>Learning</h2>
+            <p class="tips">The learning method allows you to control the robot through the 3D mouse and retain positions and actions in order to make a trajectory that could be reused.</p>
+        </div>
+    </row>
+    <row>
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-addon" id="process-addon">Process</span>
+                <input type="text" id="input-selected-process" class="form-control" placeholder="No Process selected">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Load
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" id="learning-process-list"></ul>
+                </div>
+            </div>
+            <p>
+                <ul class="list-group" id="learning-process-infos"></ul>
+            </p>
+        </div>  
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="processing_input_move input-group">
+                    <span class="input-group-addon" id="movement-addon">Move</span>
+                    <input type="text" id="input-add-move" class="form-control" placeholder="Create new move">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default" onclick="BtnAddMoveClick()">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <br/><br/><br/>
+
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" id="btn-add-open" onclick="BtnAddOpenClick()">Add open gripper</button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" id="btn-add-close" onclick="BtnAddCloseClick()">Add close gripper</button>
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" id="btn-add-point" onclick="BtnAddPointClick()">Add current position</button>
+                </div>
+            </div>
+
+            <br/>
+
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" id="btn-calib-plateau">Tray calibration</button>
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" onclick="BtnAddDeposeTrayClick()">Add tray depose</button>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" onclick="BtnAddWithdrawTrayClick()">Add tray withdraw</button>
+                </div>
+            </div>
+
+            <br/>
+
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" id="btn-start-process" onclick="BtnStartProcessClick()">Play current trajectory</button>  
+                </div>
+            </div>
+            
+            <!--
+            <div class="col-md-12">
+                <div class="col-md-6">  
+                    <button type="button" class="btn btn-default" id="btn-add-open" onclick="BtnAddOpenClick()">Add open gripper</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" id="btn-add-close" onclick="BtnAddCloseClick()">Add close gripper</button>
+                </div>
+            </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" id="btn-add-point" onclick="BtnAddPointClick()">Add current position</button>
+                </div>
+            </div>            
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" id="btn-start-process" onclick="BtnStartProcessClick()">Play current trajectory</button>
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default" id="btn-start-process" onclick="BtnStartProcessClick()">Play current trajectory</button>
+                </div>
+            </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" id="btn-calib-plateau">Tray calibration</button>
+                </div>
+            </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" onclick="BtnAddDeposeTrayClick()">Tray depose</button>
+                </div>
+            </div>
+            <div class="col-md-12 margin-top-15">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-default" onclick="BtnAddWithdrawTrayClick()">Tray withdraw</button>
+                </div>
+            </div>
+            -->
+        </div>
+    </row>
+</div>
+
+@Html.Partial("~/Views/Partials/ModalCalibrationPlateau.cshtml")
+
+<script>
+
+    function CallAddTrayAction(processName, isWithdraw) {
+        $.ajax({
+            url: "/Home/AddTrayAction",
+            type: "get",
+            data: { processName: processName, isWithdraw: isWithdraw },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function BtnAddWithdrawTrayClick()
+    {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddTrayAction(processName, true);
+    }
+
+    function BtnAddDeposeTrayClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddTrayAction(processName, false);
+    }
+
+    var guidSelectedMovement = "";
+    function DisplayMovementElement(movementId) {
+        $('.list-group-item').removeClass('selected');
+        $('.inside-list-group').hide();
+        if (guidSelectedMovement != movementId) {
+            $('#' + movementId).addClass('selected');
+            $('#group-' + movementId).show();
+            guidSelectedMovement = movementId;
+        } else {
+            guidSelectedMovement = "";
+        }
+    }
+
+    function DeleteProcessElement(elementId) {
+        $('#' + elementId).remove();
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallDeleteCommand(processName, elementId)
+    }
+
+    function RefreshProcessInfo() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallGetHtmlProcess(processName);
+        else
+            $('#learning-process-infos').empty();
+    }
+
+    function CallGetProcessNameList() {
+        $.ajax({
+            url: "/Home/GetProcessNameList",
+            type: "get",
+            success: function (response, textStatus, jqXHR) {
+                $('#learning-process-list').empty();
+                for (var i in response) {
+                    var entry = "<li><a onclick='CallGetHtmlProcess(\"" + response[i] + "\")'>" + response[i] + "</a></li>";
+                    $('#learning-process-list').append(entry);
+                }
+            }
+        });
+    }
+    CallGetProcessNameList();
+
+    function CallGetHtmlProcess(processName) {
+        $('#input-selected-process').val(processName);
+        $.ajax({
+            url: "/Home/GetHtmlProcess",
+            type: "get",
+            data: { processName: processName },
+            success: function (response, textStatus, jqXHR) {
+                CallGetProcessNameList();
+                $('#learning-process-infos').empty();
+                $('#learning-process-infos').append(response);
+                InitDnD();
+                if (response.indexOf(guidSelectedMovement) > 0) {
+                    var tempId = guidSelectedMovement;
+                    guidSelectedMovement = "";
+                    DisplayMovementElement(tempId);
+                } else {
+                    $('.inside-list-group').hide();
+                    guidSelectedMovement = "";
+                }
+            }
+        });
+    }
+
+    function CallSwitchCommand(processName, guidCmd1, guidCmd2) {
+        $.ajax({
+            url: "/Home/SwitchCommand",
+            type: "get",
+            data: { processName: processName, guidCmd1: guidCmd1, guidCmd2: guidCmd2 },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallAddCurrentPosition(processName, guidMovement) {
+        $.ajax({
+            url: "/Home/AddCurrentPosition",
+            type: "get",
+            data: { processName: processName, guidMovement: guidMovement },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallAddGripperAction(processName, open) {
+        $.ajax({
+            url: "/Home/AddGripperAction",
+            type: "get",
+            data: { processName: processName, open: open },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallAddMovement(processName, movementName) {
+        $.ajax({
+            url: "/Home/AddMovement",
+            type: "get",
+            data: { processName: processName, movementName: movementName },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    function CallStartProcess(processName) {
+        $.ajax({
+            url: "/Home/StartProcess",
+            type: "get",
+            data: { processName: processName },
+            success: function (response, textStatus, jqXHR) {
+                if (typeof (UpdateLogs) == 'function')
+                    UpdateLogs();
+            }
+        });
+    }
+
+    function CallDeleteCommand(processName, guidCmd) {
+        $.ajax({
+            url: "/Home/DeleteCommand",
+            type: "get",
+            data: { processName: processName, guidCmd: guidCmd },
+            success: function (response, textStatus, jqXHR) {
+                RefreshProcessInfo();
+            }
+        });
+    }
+
+    $("#input-selected-process").focusout(function () {
+        RefreshProcessInfo();
+    });
+
+    function BtnStartProcessClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallStartProcess(processName);
+    }
+
+    function BtnAddPointClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "" && guidSelectedMovement != "")
+            CallAddCurrentPosition(processName, guidSelectedMovement);
+    }
+
+    function BtnAddOpenClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddGripperAction(processName, true);
+    }
+
+    function BtnAddCloseClick() {
+        var processName = $('#input-selected-process').val();
+        if (processName != "")
+            CallAddGripperAction(processName, false);
+    }
+
+    function BtnAddMoveClick() {
+        var moveName = $('#input-add-move').val();
+        var processName = $('#input-selected-process').val();
+        if (moveName != "" && processName != "")
+            CallAddMovement(processName, moveName);
+        $('#input-add-move').val("");
+    }
+
+
+    //////////////////////////////////////
+    /////DRAG AND DROG IMPLEMENTATION/////
+    //////////////////////////////////////
+
+    var rows;
+    var dragSrcEl = null;
+
+    function HandleDragStart(e) {
+        this.style.opacity = '0.4';
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+        e.dataTransfer.setData('id', this.id);
+        $('.list-group-item').removeClass('selected');
+        $('.inside-list-group').hide();
+        guidSelectedMovement = "";
+    }
+
+    function HandleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function HandleDragEnter(e) {
+        this.classList.add('over');
+    }
+
+    function HandleDragLeave(e) {
+        this.classList.remove('over');
+    }
+
+    function HandleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        if (dragSrcEl != this) {
+            // Set the source column's HTML to the HTML of the column we dropped on.
+            dragSrcEl.innerHTML = this.innerHTML;
+            dragSrcEl.id = this.id;
+            this.innerHTML = e.dataTransfer.getData('text/html');
+            this.id = e.dataTransfer.getData('id');
+
+            var processName = $('#input-selected-process').val();
+            CallSwitchCommand(processName, dragSrcEl.id, this.id);
+        }
+        return false;
+    }
+
+    function HandleDragEnd(e) {
+        [].forEach.call(rows, function (row) {
+            row.classList.remove('over');
+            row.style.opacity = '1.0';
+        });
+    }
+
+    function InitDnD() {
+        rows = document.querySelectorAll('.drag-item');
+        [].forEach.call(rows, function (row) {
+            row.addEventListener('dragstart', HandleDragStart, false);
+            row.addEventListener('dragenter', HandleDragEnter, false);
+            row.addEventListener('dragover', HandleDragOver, false);
+            row.addEventListener('dragleave', HandleDragLeave, false);
+            row.addEventListener('drop', HandleDrop, false);
+            row.addEventListener('dragend', HandleDragEnd, false);
+        });
+    }
+
+    //////////////////////////////////////
+    //////////END DRAG AND DROP///////////
+    //////////////////////////////////////
+
+
+</script>

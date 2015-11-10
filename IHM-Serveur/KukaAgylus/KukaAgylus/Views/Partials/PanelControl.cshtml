@@ -1,0 +1,278 @@
+﻿<div class="col-lg-12">
+    <h2>Mouse Calibration</h2>
+    <p class="tips">Mouse calibration is use to know your max and min range. Calibration must be done in order to move correctly the robot in "Learning" mode.<br />In order to complete this step, "start" calibration and move all mouse's axis to max range, then "stop" the calibration process.</p>
+    <input type="hidden" id="hf-calibration-state" value="stop" />
+    <p><input type="button" id="btn-mouse-calib" class="btn btn-default" title="Calibration" value="Start calibration" onclick="BtnCalibrateClick()" /></p>
+</div>
+<div class="col-lg-12">
+    <h2>Robot Initialisation</h2>
+    <p class="tips">You have to set the robot ip adress and open the connection to the device in order to use the modes listed bellow.</p>
+    <p>
+        <input type="hidden" id="hf-connection-state" value="disconnected" />
+        <div class="input-group">
+            <span class="input-group-addon" id="ipadress-addon">@@Ip</span>
+            <input type="text" id="input-ipadress" class="form-control" placeholder="Default: 192.168.1.1" aria-describedby="ipadress-addon">
+            <span class="input-group-btn">
+                <input type="button" class="btn btn-default" id="btn-rob-connect" title="Connect" value="Connect" onclick="BtnConnectClick()" />
+            </span>
+        </div>
+    </p>
+    <p class="tips">Mode selector allows you to change robot behaviour. In "Learning mode", you can move the robot with your connected mouse and record points or orders. Then, you will be able to execute the process with "Processing" mode.</p>
+    <p>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Mode
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-left">
+                    <li><a onclick="SetRobotMode('Learning')">Learning</a></li>
+                    <li><a onclick="SetRobotMode('Processing')">Processing</a></li>
+                </ul>
+            </div>
+            <input type="text" id="input-selected-mode" class="form-control" placeholder="No selected Mode" readonly="readonly">
+            <span class="input-group-btn">
+                <input type="button" class="btn btn-default" id="btn-change-mode" value="Send" onclick="BtnChangeModeClick()" />
+            </span>
+        </div>
+    </p>
+</div>
+<div class="col-lg-12">
+    <h2>Custom Settings</h2>
+    <p class="tips">Value treshold to determine if the mouse movement is a rotation or a translation.</p>
+    <p>
+        <div class="input-group">
+            <span class="input-group-addon" id="treshold-addon">Treshold</span>
+            <input type="text" id="input-treshold" class="form-control" placeholder="Mouse treshold" aria-describedby="treshold-addon">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" id="btn-send-treshold" title="Treshold" value="Send" onclick="BtnSendTresholdClick()">Send</button>
+            </span>
+        </div>
+    </p>
+    <p class="tips">Velocity of the translation movement. The value needs to be between 0 and 100.</p>
+    <p>
+        <div class="input-group">
+            <span class="input-group-addon" id="translation-velocity-addon">Velocity T</span>
+            <input type="text" id="input-translation-velocity" class="form-control" placeholder="Translation velocity" aria-describedby="translation-velocity-addon">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" id="btn-send-translation-velocity" title="Send translation velocity" value="Send" onclick="BtnSendTranslationVelocityClick()">Send</button>
+            </span>
+        </div>
+    <p class="tips">Velocity of the rotation movement. The value needs to be between 0 and 1.</p>
+    <p>
+        <div class="input-group">
+            <span class="input-group-addon" id="rotation-velocity-addon">Velocity R</span>
+            <input type="text" id="input-rotation-velocity" class="form-control" placeholder="Rotation velocity" aria-describedby="rotation-velocity-addon">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" id="btn-send-rotation-velocity" title="Send rotation velocity" value="Send" onclick="BtnSendRotationVelocityClick()">Send</button>
+            </span>
+        </div>
+    </p>
+</div>
+
+
+
+<script>
+
+    function SetRobotMode(selectedMode) {
+        $('#input-selected-mode').val(selectedMode);
+    }
+
+    function CallSwitchMouseCalibration(start) {
+        $.ajax({
+            url: "/Home/SwitchMouseCalibration",
+            type: "get",
+            data: { start: start },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    if ($('#hf-calibration-state').val() == "stop") {
+                        $('#hf-calibration-state').val("start");
+                        $('#btn-mouse-calib').val("Stop calibration");
+                    } else {
+                        $('#hf-calibration-state').val("stop");
+                        $('#btn-mouse-calib').val("Start calibration");
+                    }
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            }
+        });
+    }
+
+    function CallSwitchRobotConnection(connect, ip) {
+        $.ajax({
+            url: "/Home/SwitchRobotConnection",
+            type: "get",
+            data: {
+                connect: connect,
+                ip: ip
+            },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    if ($('#hf-connection-state').val() == "disconnected") {
+                        $('#hf-connection-state').val("connected");
+                        $('#btn-rob-connect').val("Disconnect");
+                    } else {
+                        $('#hf-connection-state').val("disconnected");
+                        $('#btn-rob-connect').val("Connect");
+                    }
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateRobotInfos();
+            }
+        });
+    }
+
+    function CallSetRobotMode(modeName) {
+        $.ajax({
+            url: "/Home/SetRobotMode",
+            type: "get",
+            data: { modeName: modeName },
+            success: function (response, textStatus, jqXHR) {
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateMouseInfos();
+            }
+        });
+    }
+
+    function CallSetMouseTreshold(treshold) {
+        $.ajax({
+            url: "/Home/SetMouseTreshold",
+            type: "get",
+            data: { treshold: treshold },
+            success: function (response, textStatus, jqXHR) {
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            }
+        });
+    }
+
+    function CallSetTranslationVelocity(velocity) {
+        $.ajax({
+            url: "/Home/SetTranslationVelocity",
+            type: "get",
+            data: { velocity: velocity },
+            success: function (response, textStatus, jqXHR) {
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            }
+        });
+    }
+
+    function CallSetRotationVelocity(velocity) {
+        $.ajax({
+            url: "/Home/SetRotationVelocity",
+            type: "get",
+            data: { velocity: velocity },
+            success: function (response, textStatus, jqXHR) {
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            }
+        });
+    }
+
+    function BtnCalibrateClick() {
+        var start = ($('#hf-calibration-state').val() == "stop");
+        CallSwitchMouseCalibration(start);
+    }
+
+    function BtnConnectClick() {
+        var connect = ($('#hf-connection-state').val() == "disconnected");
+        var ip = ($('#input-ipadress').val() != "") ? $('#input-ipadress').val() : "192.168.1.1";
+        CallSwitchRobotConnection(connect, ip);
+    }
+
+    function BtnChangeModeClick() {
+        var modeName = $('#input-selected-mode').val();
+        CallSetRobotMode(modeName);
+    }
+
+
+    function BtnSendTresholdClick() {
+        var treshold = $('#input-treshold').val();
+        CallSetMouseTreshold(treshold);
+    }
+
+    function BtnSendTranslationVelocityClick() {
+        var velocity = $('#input-translation-velocity').val();
+        CallSetTranslationVelocity(velocity);
+    }
+
+    function BtnSendRotationVelocityClick() {
+        var velocity = $('#input-rotation-velocity').val();
+        CallSetRotationVelocity(velocity);
+    }
+
+
+
+    @*
+    function BtnSendTreshold() {
+
+    }
+
+    function BtnApplyClick() {
+        $.ajax({
+            url: "/Home/ApplyRobotSettings",
+            type: "get",
+            data: { mode: $('#input-selected-mode').val(), velocity: $('#input-velocity').val() },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateRobotInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function BtnCalibrateClick() {
+        $.ajax({
+            url: "/Home/SwitchMouseCalibration",
+            type: "get",
+            data: { start: ($('#hf-calibration-state').val() == "stop") },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    if ($('#hf-calibration-state').val() == "stop") {
+                        $('#hf-calibration-state').val("start");
+                        $('#btn-mouse-calib').val("Stop calibration");
+                    } else {
+                        $('#hf-calibration-state').val("stop");
+                        $('#btn-mouse-calib').val("Start calibration");
+                    }
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateMouseInfos) == 'function') UpdateMouseInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+
+    function BtnConnectClick() {
+        var adr =
+        $.ajax({
+            url: "/Home/SwitchRobotConnection",
+            type: "get",
+            data: {
+                connect: ($('#hf-connection-state').val() == "disconnected"),
+                ip: ($('#input-ipadress').val() != "") ? $('#input-ipadress').val() : "192.168.1.1"
+            },
+            success: function (response, textStatus, jqXHR) {
+                if (response.Success) {
+                    if ($('#hf-connection-state').val() == "disconnected") {
+                        $('#hf-connection-state').val("connected");
+                        $('#btn-rob-connect').val("Disconnect");
+                    } else {
+                        $('#hf-connection-state').val("disconnected");
+                        $('#btn-rob-connect').val("Connect");
+                    }
+                }
+                if (typeof (UpdateLogs) == 'function') UpdateLogs();
+                if (typeof (UpdateRobotInfos) == 'function') UpdateRobotInfos();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }*@
+</script>

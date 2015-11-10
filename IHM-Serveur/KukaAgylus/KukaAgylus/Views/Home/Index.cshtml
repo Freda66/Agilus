@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@Html.Partial("~/Views/Partials/PanelInfos.cshtml")
+
+<div class="row margin-top-20">
+    <div class="col-md-4 control-panel-left">
+        @Html.Partial("~/Views/Partials/PanelControl.cshtml")
+    </div>
+    <div class="col-md-8">
+        @Html.Partial("~/Views/Partials/PanelLearning.cshtml")
+    </div>
+    
+</div>
+
+@Html.Partial("~/Views/Partials/ConsoleLog.cshtml")

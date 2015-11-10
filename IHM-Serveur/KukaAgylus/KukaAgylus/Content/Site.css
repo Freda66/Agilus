@@ -1,0 +1,180 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.console {
+    overflow-y: auto;
+    max-height: 200px;
+    border-radius: 6px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-width: 1px;
+    background-color: #1c1e22;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+.panel-infos {
+    padding-left: 60px;
+    padding-right: 60px;
+    padding-bottom: 30px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-color: #1c1e22;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    font-weight: normal !important;
+}
+
+.val-info {
+    padding-left: 0;
+}
+
+.status-ok {
+    color: rgb(70, 224, 5);
+    font-weight: bold;
+}
+
+.status-ko {
+    color: rgb(224, 70, 5);
+    font-weight: bold;
+}
+
+label {
+    font-weight: normal;
+}
+
+.control-panel-left {
+    border-right: 1px solid rgba(0,0,0,0.6);
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.margin-top-15 {
+    margin-top: 15px;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.input-group-addon {
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-repeat: inherit;
+}
+
+.input-group .form-control {
+    border: 1px solid rgb(19, 21, 22);
+    background-color: rgb(237, 237, 237);
+    outline-color: rgb(255, 255, 255);
+}
+
+.navbar-right {
+    margin-right: 0;
+}
+
+#btn-display-tips {
+    color: #cccccc;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 20px;
+    background-color: transparent;
+    background-image: none;
+    margin: 0;
+    border-bottom: 0;
+    border-top: 0;
+    border-radius: 0 0 0 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    #btn-display-tips:hover {
+        background-image: -webkit-linear-gradient(#020202, #101112 40%, #191b1d);
+        background-image: -o-linear-gradient(#020202, #101112 40%, #191b1d);
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#020202), color-stop(40%, #101112), to(#191b1d));
+        background-image: linear-gradient(#020202, #101112 40%, #191b1d);
+        background-repeat: no-repeat;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff020202', endColorstr='#ff191b1d', GradientType=0);
+        -webkit-filter: none;
+        filter: none;
+        border-left-color: transparent;
+    }
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+.drag-item {
+    cursor: move;
+}
+
+    .drag-item.over {
+        border: 2px dashed #000;
+    }
+
+.inside-list-group {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.inside-list-group-item {
+    background-color: #1c1e22;
+    color: #c8c8c8;
+}
+
+.selected {
+    border-style: dashed;
+    border-width: medium;
+}
+
+.ui-dialog-titlebar {
+    display: none;
+}
+
+
+#modal-calibration-plateau {
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    color: #c8c8c8;
+    background-color: #272b30;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    font-weight: normal !important;
+}
+
+.h-39{
+    height : 39px;
+}
+
+.processing_input_move {
+    margin-left: -15px; 
+    width: 110%;
+}

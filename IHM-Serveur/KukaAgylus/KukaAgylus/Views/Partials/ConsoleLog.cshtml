@@ -1,0 +1,29 @@
+﻿<div class="row">
+    <div class="col-lg-12">
+        <h2>Logs</h2>
+        <div id="div-log" class="console">
+        </div>
+    </div>
+</div>
+
+<script>
+    var timer_log;
+    function UpdateLogs() {
+        clearTimeout(timer_log);
+        $.ajax({
+            url: "/Home/GetLogs",
+            type: "get",
+            success: function (response, textStatus, jqXHR) {
+                $('.console').empty();
+                response.forEach(function (log) {
+                    $('.console').append(log + '<br/>');
+                });
+                timer_log = setTimeout("UpdateLogs()", 2000);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                clearTimeout(timer_log);
+            }
+        });
+    }
+    UpdateLogs();
+</script>
